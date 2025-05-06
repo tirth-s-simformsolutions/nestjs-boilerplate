@@ -1,0 +1,34 @@
+{
+  "DB": {
+    "VALIDATION": {
+      "FK_ERROR": "Please provide correct data",
+      "UQ_ERROR": "Duplicate entry detected"
+    }
+  },
+  "SERVER": {
+    "INTERNAL_SERVER": "Internal server error",
+    "PAGE_NOT_FOUND": "Page not found"
+  },
+  "VALIDATION": {
+    "IS_STRING": "{key} should be string.",
+    "NOT_EMPTY": "{key} cannot be empty.",
+    "IS_INT": "{key} should be number.",
+    "IS_BOOLEAN": "{key} should be boolean.",
+    "IS_NUMBER_STRING": "{key} string should contain only numbers.",
+    "IS_EMAIL": "{key} should be valid email.",
+    "IS_ENUM": "{key} should be one of {enumValues} values.",
+    "LENGTH": "{key} length should be between {min} and {max}",
+    "IS_NUMBER": "{key} must be a number.",
+    "IS_ARRAY": "{key} should be valid array.",
+    "IS_NUMBER_ARRAY": "{key} should be valid number array.",
+    "MIN_REQUIRED": "{key} should be of valid minimum size.",
+    "IS_INVALID": "{key} is invalid.",
+    "IS_UNIQUE_ARRAY": "{key} should be array of unique elements.",
+    "MAX_LENGTH": "The {key} must not exceed {length} characters.",
+    "MIN_LENGTH": "The {key} must be at least {length} characters.",
+    "SHOULD_VALID_INT": "value of {key} should be {comparison} then {value}.",
+    "MIN_VALUE": "{key} must not be less than {value}",
+    "IS_UUID": "{key} should be valid uuid",
+    "IS_DATE": "{key} should be valid date"
+  }
+}
