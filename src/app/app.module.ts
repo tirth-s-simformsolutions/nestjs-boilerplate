@@ -10,7 +10,7 @@ import {
 } from '../core/interceptors';
 import { DatabaseModule } from '../database/database.module';
 import { AuthModule } from '../modules/auth/auth.module';
-import { AuthGuard } from '../core/guards';
+import { AuthGuard, CustomThrottlerGuard } from '../core/guards';
 import { UserModule } from '../modules/user/user.module';
 import appConfig from '../config/app.config';
 import databaseConfig from '../config/database.config';
@@ -18,6 +18,7 @@ import jwtConfig from '../config/jwt.config';
 import { HealthService, LoggerService } from '../common/services';
 import { validateEnvVariables } from '../common/utils';
 import { TraceMiddleware } from '../core/middleware';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -32,6 +33,14 @@ import { TraceMiddleware } from '../core/middleware';
         fallbackLanguage: 'en',
         loaderOptions: { path: join(__dirname, '../../i18n/'), watch: true },
       }),
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
     }),
     DatabaseModule,
     AuthModule,
@@ -51,6 +60,10 @@ import { TraceMiddleware } from '../core/middleware';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: CustomThrottlerGuard,
     },
     LoggerService,
   ],
