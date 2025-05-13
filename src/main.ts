@@ -11,8 +11,8 @@ import helmet from 'helmet';
 import * as morgan from 'morgan';
 import * as sentry from '@sentry/node';
 import { ConfigService } from '@nestjs/config';
-import { logger } from './common/services';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { logger } from './common/services';
 import { isProduction } from './common/utils';
 import { ENV } from './common/constants';
 
@@ -31,6 +31,7 @@ const configureSwagger = (app: INestApplication): void => {
     )
     .setVersion('1.0')
     .build();
+
   const document = SwaggerModule.createDocument(app, swaggerOptions);
 
   SwaggerModule.setup('docs', app, document, {
@@ -90,8 +91,8 @@ const bootstrap = async (): Promise<void> => {
   }
 
   // sentry setup
-  const dsn = configService.get('app.sentryDsn') as string;
-  const env = configService.get('app.env') as string;
+  const dsn = configService.get<string | null>('app.sentryDsn');
+  const env = configService.get<string>('app.env');
   if (dsn && (env === ENV.PRODUCTION || env === ENV.STAGING)) {
     sentry.init({
       dsn: dsn,
@@ -107,10 +108,10 @@ const bootstrap = async (): Promise<void> => {
     }),
   );
 
-  await app.listen(configService.get('app.port') as string, () => {
-    nestLogger.log(
-      `🚀 service running on port ${configService.get('app.port') as string}`,
-    );
+  const port = configService.get<number>('app.port');
+
+  await app.listen(port, () => {
+    nestLogger.log(`🚀 Service running on port ${port}`);
   });
 };
 

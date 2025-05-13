@@ -61,7 +61,7 @@ export class AuthService {
         email,
         password: await hashPassword(
           password,
-          +this.configService.get('app.passwordSaltRound'),
+          this.configService.get<number>('app.passwordSaltRound'),
         ),
         name,
         status: USER_STATUS.ACTIVE,
@@ -257,7 +257,7 @@ export class AuthService {
 
       const newPasswordHash = await hashPassword(
         newPassword,
-        +this.configService.get('app.passwordSaltRound'),
+        this.configService.get<number>('app.passwordSaltRound'),
       );
 
       await this.userRepository.updateUserById(userId, {

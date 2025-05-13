@@ -15,9 +15,9 @@ import { ITokenPayload } from 'src/modules/auth/interfaces';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private reflector: Reflector,
-    private authService: AuthService,
-    private configService: ConfigService,
+    private readonly reflector: Reflector,
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -44,9 +44,9 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
       }
 
-      const accessTokenSecretKey = this.configService.get(
+      const accessTokenSecretKey = this.configService.get<string>(
         'jwt.accessToken.secretKey',
-      ) as string;
+      );
       const decode = await verifyToken<ITokenPayload>(
         token,
         accessTokenSecretKey,

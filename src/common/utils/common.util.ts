@@ -9,11 +9,11 @@ import { EnvVariablesDto } from '../dtos';
 import { validateSync } from 'class-validator';
 
 export const isProduction = (configService: ConfigService): boolean =>
-  configService.get('app.env') === ENV.PRODUCTION;
+  configService.get<string>('app.env') === ENV.PRODUCTION;
 
 export const isDev = (configService: ConfigService): boolean =>
-  configService.get('app.env') === ENV.DEV ||
-  configService.get('app.env') === ENV.LOCAL;
+  configService.get<string>('app.env') === ENV.DEV ||
+  configService.get<string>('app.env') === ENV.LOCAL;
 
 export const handleError = (error: Error): void => {
   if (error instanceof HttpException) {

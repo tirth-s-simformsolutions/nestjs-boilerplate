@@ -23,7 +23,7 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const i18n = I18nContext.current(host);
     const response = ctx.getResponse<Response>();
-    const env = this.configService.get('app.env');
+    const env = this.configService.get<string>('app.env');
 
     if (exception instanceof HttpException) {
       if (exception.getStatus() === HttpStatus.INTERNAL_SERVER_ERROR) {
