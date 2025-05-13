@@ -7,28 +7,30 @@ import {
 } from '@nestjs/common';
 import { I18nContext } from 'nestjs-i18n';
 import { firstValueFrom, Observable, of } from 'rxjs';
-import { logger } from '../../common/services';
+import { LoggerService } from '../../common/services';
 import { STATUS_MESSAGES } from '../../common/constants';
 import { IResponse } from '../interfaces/response.interface';
 
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
+  constructor(private readonly logger: LoggerService) {}
+
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<IResponse<unknown>>> {
     const body = await firstValueFrom(next.handle());
     const i18n = I18nContext.current(context);
-    const status = body?.statusCode || HttpStatus.OK;
+    const status = body?.statusCode ?? HttpStatus.OK;
     const response = context.switchToHttp().getResponse();
     response.status(status);
 
     return of({
       message: this.translateMessage(
-        body?.message || STATUS_MESSAGES[status],
+        body?.message ?? STATUS_MESSAGES[status],
         i18n,
       ),
-      data: body?.data || null,
+      data: body?.data ?? null,
       error: null,
     });
   }
@@ -40,7 +42,7 @@ export class ResponseInterceptor implements NestInterceptor {
     try {
       args = argsString ? JSON.parse(argsString) : undefined;
     } catch (error) {
-      logger.error(error);
+      this.logger.error(error);
       args = undefined;
     }
 

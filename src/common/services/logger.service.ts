@@ -1,84 +1,31 @@
-import { createLogger, format, Logform, Logger, transports } from 'winston';
-const { combine, timestamp, printf } = format;
+import { Injectable, Logger } from '@nestjs/common';
+import { asyncContext as context } from '../utils';
 
-const logDateFormat = 'YYYY-MM-DD HH:mm:ss Z';
+@Injectable()
+export class LoggerService extends Logger {
+  log(message: string, traceId?: string) {
+    super.log(`[${traceId || context.getTraceId()}] ${message}`);
+  }
 
-const formatLog: () => Logform.Format = () =>
-  printf((info): string => {
-    const {
-      message: logMessage,
-      level: logLevel,
-      timestamp: logTimestamp,
-      ...metadata
-    } = info;
-    let message: string = '';
-    let metadataInfo: string = '';
-    if (typeof logMessage === 'string') {
-      message = logMessage;
-    } else if (
-      typeof logMessage === 'object' &&
-      Object.keys(logMessage).length > 0
-    ) {
-      message = JSON.stringify(logMessage);
+  error(message: string | Error, traceId?: string) {
+    if (message instanceof Error) {
+      super.error(
+        `[${traceId || context.getTraceId()}] ${message.message}\nStack: ${message.stack}`,
+      );
+    } else {
+      super.error(`[${traceId || context.getTraceId()}] ${message}`);
     }
-    if (typeof metadata === 'string') {
-      metadataInfo = metadata;
-    } else if (
-      typeof metadata === 'object' &&
-      Object.keys(metadata).length > 0
-    ) {
-      try {
-        metadataInfo = JSON.stringify(metadata);
-      } catch (error) {
-        // do nothing
-      }
-    }
-    return `${logTimestamp} ${logLevel} ${process.pid} ${message} ${metadataInfo}`;
-  });
+  }
 
-const formatErrorLog: () => Logform.Format = () =>
-  combine(
-    format.splat(),
-    timestamp({ format: logDateFormat }),
-    format.errors({ stack: true }),
-    formatLog(),
-  );
+  warn(message: string, traceId?: string) {
+    super.warn(`[${traceId || context.getTraceId()}] ${message}`);
+  }
 
-export const logger: Logger = createLogger({
-  level: 'info',
-  format: formatErrorLog(),
-  exitOnError: false,
-  transports: [
-    new transports.Console({
-      format: combine(
-        format.splat(),
-        timestamp({ format: logDateFormat }),
-        format.errors({ stack: true }),
-        format.json(),
-        formatLog(),
-      ),
-    }),
-  ],
-  // to log unhandled errors
-  exceptionHandlers: [
-    new transports.Console({
-      format: combine(
-        format.splat(),
-        timestamp({ format: logDateFormat }),
-        format.errors({ stack: true }),
-        formatLog(),
-      ),
-    }),
-  ],
-  rejectionHandlers: [
-    new transports.Console({
-      format: combine(
-        format.colorize(),
-        format.splat(),
-        timestamp({ format: logDateFormat }),
-        format.errors({ stack: true }),
-        formatLog(),
-      ),
-    }),
-  ],
-});
+  debug(message: string, traceId?: string) {
+    super.debug(`[${traceId || context.getTraceId()}] ${message}`);
+  }
+
+  verbose(message: string, traceId?: string) {
+    super.verbose(`[${traceId || context.getTraceId()}] ${message}`);
+  }
+}

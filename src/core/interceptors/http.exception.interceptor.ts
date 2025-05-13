@@ -13,11 +13,14 @@ import * as sentry from '@sentry/node';
 import { ConfigService } from '@nestjs/config';
 import { ENV } from '../../common/constants';
 import { ERROR_MSG } from '../../common/messages';
-import { logger } from '../../common/services';
+import { LoggerService } from '../../common/services';
 
 @Catch()
 export class HttpExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly logger: LoggerService,
+  ) {}
 
   catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -27,14 +30,14 @@ export class HttpExceptionsFilter implements ExceptionFilter {
 
     if (exception instanceof HttpException) {
       if (exception.getStatus() === HttpStatus.INTERNAL_SERVER_ERROR) {
-        logger.error(exception);
+        this.logger.error(exception);
         if (env === ENV.PRODUCTION || env === ENV.STAGING) {
           sentry.captureException(exception);
         }
       }
       return this.handleHttpException(exception, response, i18n);
     } else {
-      logger.error(exception);
+      this.logger.error(exception);
       if (env === ENV.PRODUCTION || env === ENV.STAGING) {
         sentry.captureException(exception);
       }
@@ -145,7 +148,7 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     try {
       args = argsString ? JSON.parse(argsString) : undefined;
     } catch (error) {
-      logger.error(error);
+      this.logger.error(error);
       args = undefined;
     }
     return i18n ? i18n?.translate(translationKey, args) : translationKey;

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { join } from 'path';
 import { I18nModule, AcceptLanguageResolver } from 'nestjs-i18n';
@@ -15,8 +15,9 @@ import { UserModule } from '../modules/user/user.module';
 import appConfig from '../config/app.config';
 import databaseConfig from '../config/database.config';
 import jwtConfig from '../config/jwt.config';
-import { HealthService } from '../common/services';
+import { HealthService, LoggerService } from '../common/services';
 import { validateEnvVariables } from '../common/utils';
+import { TraceMiddleware } from '../core/middleware';
 
 @Module({
   imports: [
@@ -51,6 +52,11 @@ import { validateEnvVariables } from '../common/utils';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    LoggerService,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TraceMiddleware).exclude('/v1/health-check').forRoutes('*');
+  }
+}

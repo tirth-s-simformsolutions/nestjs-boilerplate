@@ -8,11 +8,9 @@ import {
   VersioningType,
 } from '@nestjs/common';
 import helmet from 'helmet';
-import * as morgan from 'morgan';
 import * as sentry from '@sentry/node';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { logger } from './common/services';
 import { isProduction } from './common/utils';
 import { ENV } from './common/constants';
 
@@ -100,13 +98,6 @@ const bootstrap = async (): Promise<void> => {
       environment: env,
     });
   }
-
-  app.use(
-    morgan(':method :url :status :res[content-length] :response-time ms', {
-      stream: { write: (string) => logger.info(string.replace('\n', '')) },
-      skip: (req) => req.url.includes('healthCheck'),
-    }),
-  );
 
   const port = configService.get<number>('app.port');
 
