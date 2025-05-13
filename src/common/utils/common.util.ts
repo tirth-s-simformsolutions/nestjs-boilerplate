@@ -4,6 +4,9 @@ import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { ENV, TIME_UNIT } from '../constants';
 import dayjs from './dayjs.util';
+import { plainToInstance } from 'class-transformer';
+import { EnvVariablesDto } from '../dtos';
+import { validateSync } from 'class-validator';
 
 export const isProduction = (configService: ConfigService): boolean =>
   configService.get('app.env') === ENV.PRODUCTION;
@@ -35,4 +38,24 @@ export const twoDateDiff = (
 ) => {
   const date1 = dayjs(endDate);
   return date1.diff(startDate, unit);
+};
+
+export const validateEnvVariables = (config: Record<string, unknown>) => {
+  const validatedConfig = plainToInstance(EnvVariablesDto, config, {
+    enableImplicitConversion: true,
+  });
+
+  const errors = validateSync(validatedConfig, {
+    skipMissingProperties: false,
+  });
+
+  if (errors.length > 0) {
+    const errorMessages = errors
+      .map((error) => Object.values(error.constraints || {}).join(', '))
+      .join(', ');
+    throw new Error(
+      `Environment Variables Validation Failed: ${errorMessages}`,
+    );
+  }
+  return validatedConfig;
 };
