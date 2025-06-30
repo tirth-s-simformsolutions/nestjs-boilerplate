@@ -8,7 +8,7 @@
     "prettier:check": "prettier --check \"{src,apps,test}/**/*.ts\"",
     "prettier": "prettier --write \"{src,apps,test}/**/*.ts\"",
     "start": "node dist/main",
-    "dev": "nest start",
+    "dev": "pnpm run prisma:migrate && nest start",
     "dev:watch": "nest start --watch",
     "lint:check": "eslint \"{src,apps,test}/**/*.ts\"",
     "lint": "eslint \"{src,apps,test}/**/*.ts\" --fix",
