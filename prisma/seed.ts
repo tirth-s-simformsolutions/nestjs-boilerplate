@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcryptjs';
+import { randomBytes, pbkdf2Sync } from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -8,8 +8,19 @@ async function main() {
   await prisma.user.deleteMany();
 
   // Create test user
-  const hashedPassword = await bcrypt.hash('Test@123', 10);
-  
+  // Use pbkdf2Sync to hash the password
+  const salt = randomBytes(16).toString('hex');
+  const hashedPassword =
+    pbkdf2Sync(
+      'Test@123',
+      salt,
+      +process.env.PASSWORD_ITERATION_ROUND || 100000, // Default to 100000 if not set
+      64,
+      'sha512',
+    ).toString('hex') +
+    '.' +
+    salt;
+
   const user = await prisma.user.create({
     data: {
       email: 'test@example.com',

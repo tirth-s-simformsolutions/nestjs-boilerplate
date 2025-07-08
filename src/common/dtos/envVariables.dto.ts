@@ -25,7 +25,7 @@ export class EnvVariablesDto {
 
   @IsString()
   @IsNotEmpty()
-  PASSWORD_SALT_ROUND: string;
+  PASSWORD_ITERATION_ROUND: string;
 
   @IsString()
   @IsNotEmpty()

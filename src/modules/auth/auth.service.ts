@@ -7,11 +7,12 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { StringValue } from 'ms';
 import {
   generateJwtToken,
   handleError,
-  comparePassword,
-  hashPassword,
+  compareHash,
+  createHash,
   verifyToken,
 } from '../../common/utils';
 import { UserRepository } from '../../database/repositories';
@@ -31,8 +32,8 @@ import { TOKEN_TYPE } from './auth.constant';
 export class AuthService {
   private readonly accessTokenSecretKey: string;
   private readonly refreshTokenSecretKey: string;
-  private readonly accessTokenExpire: string;
-  private readonly refreshTokenExpire: string;
+  private readonly accessTokenExpire: number | StringValue;
+  private readonly refreshTokenExpire: number | StringValue;
   constructor(
     private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
@@ -43,10 +44,10 @@ export class AuthService {
     this.refreshTokenSecretKey = this.configService.get<string>(
       'jwt.refreshToken.secretKey',
     );
-    this.accessTokenExpire = this.configService.get<string>(
+    this.accessTokenExpire = this.configService.get<number | StringValue>(
       'jwt.accessToken.expire',
     );
-    this.refreshTokenExpire = this.configService.get<string>(
+    this.refreshTokenExpire = this.configService.get<number | StringValue>(
       'jwt.refreshToken.expire',
     );
   }
@@ -60,9 +61,9 @@ export class AuthService {
 
       const createUserPayload = {
         email,
-        password: await hashPassword(
+        password: await createHash(
           password,
-          this.configService.get<number>('app.passwordSaltRound'),
+          this.configService.get<number>('app.passwordIterationRound'),
         ),
         name,
         status: USER_STATUS.ACTIVE,
@@ -131,7 +132,12 @@ export class AuthService {
 
       // check user exists or not
       const isPasswordValid =
-        isUserFound && (await comparePassword(password, isUserFound.password));
+        isUserFound &&
+        (await compareHash(
+          password,
+          isUserFound.password,
+          this.configService.get<number>('app.passwordIterationRound'),
+        ));
 
       if (!isPasswordValid) {
         throw new BadRequestException(ERROR_MSG.INVALID_CREDENTIALS);
@@ -252,13 +258,19 @@ export class AuthService {
       }
 
       // check old password
-      if (!(await comparePassword(oldPassword, userInfo.password))) {
+      if (
+        !(await compareHash(
+          oldPassword,
+          userInfo.password,
+          this.configService.get<number>('app.passwordIterationRound'),
+        ))
+      ) {
         throw new ConflictException(ERROR_MSG.PASSWORD.INVALID_OLD_PASSWORD);
       }
 
-      const newPasswordHash = await hashPassword(
+      const newPasswordHash = await createHash(
         newPassword,
-        this.configService.get<number>('app.passwordSaltRound'),
+        this.configService.get<number>('app.passwordIterationRound'),
       );
 
       await this.userRepository.updateUserById(userId, {
