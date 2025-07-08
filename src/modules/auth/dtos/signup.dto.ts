@@ -8,13 +8,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import {
-  DEFAULT_MAX_LENGTH,
-  PASSWORD_DEFAULT_MIN_LENGTH,
-  PASSWORD_REGEX,
-} from '../../../common/constants';
+import { DEFAULT_MAX_LENGTH } from '../../../common/constants';
 import { VALIDATION_MSG } from '../../../common/messages';
 import { ERROR_MSG } from '../messages';
+import { PASSWORD_DEFAULT_MIN_LENGTH, PASSWORD_REGEX } from '../auth.constant';
 
 export class SignupDto {
   @ApiProperty({ example: 'Tom' })

@@ -1,4 +1,4 @@
-import { TOKEN_TYPE } from '../../../common/constants';
+import { TOKEN_TYPE } from '../auth.constant';
 
 export interface ITokenPayload {
   userId: string;

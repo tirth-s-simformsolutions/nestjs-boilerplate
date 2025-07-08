@@ -6,11 +6,13 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-import { IS_PUBLIC, TOKEN_TYPE, USER_STATUS } from '../../common/constants';
+import { IS_PUBLIC } from '../../common/constants';
 import { ERROR_MSG as AUTH_ERROR_MSG } from '../../modules/auth/messages';
 import { AuthService } from '../../modules/auth/auth.service';
 import { handleError, verifyToken } from '../../common/utils';
 import { ITokenPayload } from 'src/modules/auth/interfaces';
+import { USER_STATUS } from 'src/modules/user/user.constant';
+import { TOKEN_TYPE } from 'src/modules/auth/auth.constant';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

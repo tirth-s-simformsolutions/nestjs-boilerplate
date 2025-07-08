@@ -16,7 +16,6 @@ import {
 } from '../../common/utils';
 import { UserRepository } from '../../database/repositories';
 import { ERROR_MSG, SUCCESS_MSG } from './messages';
-import { TOKEN_TYPE, USER_STATUS } from '../../common/constants';
 import { ResponseResult } from '../../core/class/';
 import {
   ChangePasswordDto,
@@ -25,6 +24,8 @@ import {
   SignupDto,
 } from './dtos';
 import { ITokenPayload } from './interfaces';
+import { USER_STATUS } from '../user/user.constant';
+import { TOKEN_TYPE } from './auth.constant';
 
 @Injectable()
 export class AuthService {

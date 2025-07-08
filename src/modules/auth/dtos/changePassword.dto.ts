@@ -7,12 +7,9 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import {
-  DEFAULT_MAX_LENGTH,
-  PASSWORD_DEFAULT_MIN_LENGTH,
-  PASSWORD_REGEX,
-} from '../../../common/constants';
+import { DEFAULT_MAX_LENGTH } from '../../../common/constants';
 import { VALIDATION_MSG } from '../../../common/messages';
+import { PASSWORD_DEFAULT_MIN_LENGTH, PASSWORD_REGEX } from '../auth.constant';
 
 export class ChangePasswordDto {
   @ApiProperty({ example: 'Tom@123456' })
