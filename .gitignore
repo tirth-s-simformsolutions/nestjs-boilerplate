@@ -11,9 +11,8 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# pnpm
-.pnpm-store/
-pnpm-lock.yaml
+npm-shrinkwrap.json
+npm-cache/
 
 # OS
 .DS_Store

@@ -6,14 +6,10 @@ All the apis were built using [Nest js](https://github.com/nestjs/nest) framewor
 
 - [Node v22.15.0](https://nodejs.org/en/download)
 - [PostgreSQL v16](https://www.postgresql.org/)
-- [pnpm v8.15.4](https://pnpm.io/installation)
 
 ## Pre-requisites :
 
-- Install Node.js v22.15.0 and enable pnpm using corepack:
-  ```bash
-  corepack enable pnpm
-  ```
+- Install Node.js v22.15.0
 - Create a postgreSQL Database and setup the database.
 
 ## Getting Started :
@@ -31,7 +27,7 @@ All the apis were built using [Nest js](https://github.com/nestjs/nest) framewor
 - Installation :
 
   ```bash
-  $ pnpm install
+  $ npm install
   ```
 
 - Setup/Create **.env** file in the root directory of the project with all the mentioned variables in the [`.example.env`](.example.env) file.
@@ -45,35 +41,35 @@ All the apis were built using [Nest js](https://github.com/nestjs/nest) framewor
 
 - Run following command to create database tables:
   ```bash
-  pnpm prisma:migrate
+  npm run prisma:migrate
   ```
 
 - How to create new migrations:
   - Update the model in `prisma/schema.prisma`
   - Generate migration file based on schema changes:
     ```bash
-    pnpm prisma:migrate
+    npm run prisma:migrate
     ```
   - The migration will be applied automatically. To deploy migrations in production:
     ```bash
-    pnpm prisma:deploy
+    npm run prisma:deploy
     ```
 
 - To reset database (Warning: This will delete all data):
   ```bash
-  pnpm db:reset
+  npm run db:reset
   ```
 
 - To open Prisma Studio (database GUI):
   ```bash
-  pnpm prisma:studio
+  npm run prisma:studio
   ```
 
 ### Start Development Environment
 
 - Run following command to start dev environment.
   ```bash
-  $ pnpm dev
+  $ npm run dev
   ```
 
 ### Try It :
