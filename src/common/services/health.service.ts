@@ -15,6 +15,7 @@ export class HealthService {
 
       return new ResponseResult({
         message: SUCCESS_MSG.OK,
+        data: { uptime: process.uptime() },
       });
     } catch (error) {
       handleError(error);
