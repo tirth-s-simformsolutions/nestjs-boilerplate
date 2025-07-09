@@ -12,9 +12,9 @@ export class PaginationDto {
   })
   @IsOptional()
   @Type(() => Number)
-  @IsInt({ message: VALIDATION_MSG.IS_INT('take') })
-  @Min(1, { message: VALIDATION_MSG.MIN_VALUE('take', 1) })
-  take?: number = DEFAULT_PAGE_SIZE;
+  @IsInt({ message: VALIDATION_MSG.IS_INT('pageSize') })
+  @Min(1, { message: VALIDATION_MSG.MIN_VALUE('pageSize', 1) })
+  pageSize?: number = DEFAULT_PAGE_SIZE;
 
   @ApiPropertyOptional({
     example: 0,
@@ -23,7 +23,7 @@ export class PaginationDto {
   })
   @IsOptional()
   @Type(() => Number)
-  @IsInt({ message: VALIDATION_MSG.IS_INT('skip') })
-  @Min(0, { message: VALIDATION_MSG.MIN_VALUE('skip', 0) })
-  skip?: number = DEFAULT_PAGE;
+  @IsInt({ message: VALIDATION_MSG.IS_INT('page') })
+  @Min(0, { message: VALIDATION_MSG.MIN_VALUE('page', 0) })
+  page?: number = DEFAULT_PAGE;
 }

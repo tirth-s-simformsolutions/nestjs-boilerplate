@@ -31,8 +31,6 @@ export const DEFAULT_UUID_VERSION = 4;
 export const DEFAULT_PAGE = 0;
 export const DEFAULT_PAGE_SIZE = 10;
 
-export const SANITIZED_SEARCH_REGEX = /[^a-zA-Z0-9.\s@]/g;
-
 export enum ORDER {
   ASC = 'ASC',
   DESC = 'DESC',
