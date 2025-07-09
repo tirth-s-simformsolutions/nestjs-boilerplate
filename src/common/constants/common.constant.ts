@@ -26,24 +26,5 @@ export const ENV = {
 
 export const DEFAULT_MAX_LENGTH = 250;
 
-export const DEFAULT_UUID_VERSION = 4;
-
 export const DEFAULT_PAGE = 0;
 export const DEFAULT_PAGE_SIZE = 10;
-
-export enum ORDER {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
-
-export enum TIME_UNIT {
-  DAY = 'd',
-  WEEK = 'w',
-  QUARTER = 'Q',
-  MONTH = 'M',
-  YEAR = 'y',
-  HOUR = 'h',
-  MINUTE = 'm',
-  SECOND = 's',
-  MILLISECOND = 'ms',
-}

@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import { uuid } from './common.util';
+import * as crypto from 'crypto';
 
 interface RequestContext {
   traceId: string;
@@ -11,7 +11,7 @@ const asyncLocalStorage = new AsyncLocalStorage<RequestContext>();
 export const asyncContext = {
   run(callback: () => void) {
     const context: RequestContext = {
-      traceId: uuid(),
+      traceId: crypto.randomUUID(),
       startTime: Date.now(),
     };
     asyncLocalStorage.run(context, callback);

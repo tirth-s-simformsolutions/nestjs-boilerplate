@@ -1,9 +1,7 @@
 import { HttpException, InternalServerErrorException } from '@nestjs/common';
 import * as sentry from '@sentry/node';
-import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
-import { ENV, TIME_UNIT } from '../constants';
-import dayjs from './dayjs.util';
+import { ENV } from '../constants';
 import { plainToInstance } from 'class-transformer';
 import { EnvVariablesDto } from '../dtos';
 import { validateSync } from 'class-validator';
@@ -27,17 +25,6 @@ export const captureSentryException = (env: string, error: Error) => {
   if (env === ENV.PRODUCTION || env === ENV.STAGING) {
     sentry.captureException(error);
   }
-};
-
-export const uuid = () => crypto.randomUUID();
-
-export const twoDateDiff = (
-  startDate: Date,
-  endDate: Date,
-  unit: TIME_UNIT = TIME_UNIT.DAY,
-) => {
-  const date1 = dayjs(endDate);
-  return date1.diff(startDate, unit);
 };
 
 export const validateEnvVariables = (config: Record<string, unknown>) => {
