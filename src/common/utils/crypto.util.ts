@@ -2,7 +2,7 @@ import { randomBytes, pbkdf2, timingSafeEqual } from 'crypto';
 
 export const createHash = async (
   value: string,
-  iterationRound: number,
+  iterationRound: number = 100000,
 ): Promise<string> => {
   // Generate a random salt
   const salt = randomBytes(16).toString('hex');
@@ -20,7 +20,7 @@ export const createHash = async (
 export const compareHash = async (
   value: string,
   hashedValue: string,
-  iterationRound: number,
+  iterationRound: number = 100000,
 ): Promise<boolean> => {
   // Split the stored hash into hash and salt
   const [hash, salt] = hashedValue.split('.');

@@ -25,10 +25,6 @@ export class EnvVariablesDto {
 
   @IsString()
   @IsNotEmpty()
-  PASSWORD_ITERATION_ROUND: string;
-
-  @IsString()
-  @IsNotEmpty()
   JWT_ACCESS_TOKEN_EXPIRE: string;
 
   @IsString()

@@ -61,10 +61,7 @@ export class AuthService {
 
       const createUserPayload = {
         email,
-        password: await createHash(
-          password,
-          this.configService.get<number>('app.passwordIterationRound'),
-        ),
+        password: await createHash(password),
         name,
         status: USER_STATUS.ACTIVE,
       };
@@ -132,12 +129,7 @@ export class AuthService {
 
       // check user exists or not
       const isPasswordValid =
-        isUserFound &&
-        (await compareHash(
-          password,
-          isUserFound.password,
-          this.configService.get<number>('app.passwordIterationRound'),
-        ));
+        isUserFound && (await compareHash(password, isUserFound.password));
 
       if (!isPasswordValid) {
         throw new BadRequestException(ERROR_MSG.INVALID_CREDENTIALS);
@@ -258,20 +250,11 @@ export class AuthService {
       }
 
       // check old password
-      if (
-        !(await compareHash(
-          oldPassword,
-          userInfo.password,
-          this.configService.get<number>('app.passwordIterationRound'),
-        ))
-      ) {
+      if (!(await compareHash(oldPassword, userInfo.password))) {
         throw new ConflictException(ERROR_MSG.PASSWORD.INVALID_OLD_PASSWORD);
       }
 
-      const newPasswordHash = await createHash(
-        newPassword,
-        this.configService.get<number>('app.passwordIterationRound'),
-      );
+      const newPasswordHash = await createHash(newPassword);
 
       await this.userRepository.updateUserById(userId, {
         password: newPasswordHash,

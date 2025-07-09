@@ -14,7 +14,7 @@ async function main() {
     pbkdf2Sync(
       'Test@123',
       salt,
-      +process.env.PASSWORD_ITERATION_ROUND || 100000, // Default to 100000 if not set
+      100000, // Default to 100000
       64,
       'sha512',
     ).toString('hex') +
