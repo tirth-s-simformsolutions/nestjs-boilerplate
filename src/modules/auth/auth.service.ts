@@ -7,14 +7,8 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { StringValue } from 'ms';
-import {
-  generateJwtToken,
-  handleError,
-  compareHash,
-  createHash,
-  verifyToken,
-} from '../../common/utils';
+import { JwtService } from '@nestjs/jwt';
+import { handleError, compareHash, createHash } from '../../common/utils';
 import { UserRepository } from '../../database/repositories';
 import { ERROR_MSG, SUCCESS_MSG } from './messages';
 import { ResponseResult } from '../../core/class/';
@@ -31,11 +25,12 @@ import { USER_STATUS } from '../user/user.constant';
 export class AuthService {
   private readonly accessTokenSecretKey: string;
   private readonly refreshTokenSecretKey: string;
-  private readonly accessTokenExpire: number | StringValue;
-  private readonly refreshTokenExpire: number | StringValue;
+  private readonly accessTokenExpire: number | string;
+  private readonly refreshTokenExpire: number | string;
   constructor(
     private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
   ) {
     this.accessTokenSecretKey = this.configService.get<string>(
       'jwt.accessToken.secretKey',
@@ -43,10 +38,10 @@ export class AuthService {
     this.refreshTokenSecretKey = this.configService.get<string>(
       'jwt.refreshToken.secretKey',
     );
-    this.accessTokenExpire = this.configService.get<number | StringValue>(
+    this.accessTokenExpire = this.configService.get<number | string>(
       'jwt.accessToken.expire',
     );
-    this.refreshTokenExpire = this.configService.get<number | StringValue>(
+    this.refreshTokenExpire = this.configService.get<number | string>(
       'jwt.refreshToken.expire',
     );
   }
@@ -68,19 +63,24 @@ export class AuthService {
       const createdUserInfo =
         await this.userRepository.createUser(createUserPayload);
 
-      const accessToken = generateJwtToken(
+      const accessToken = await this.jwtService.signAsync(
         {
           userId: createdUserInfo.id,
         },
-        this.accessTokenSecretKey,
-        this.accessTokenExpire,
+        {
+          secret: this.accessTokenSecretKey,
+          expiresIn: this.accessTokenExpire,
+        },
       );
-      const refreshToken = generateJwtToken(
+
+      const refreshToken = await this.jwtService.signAsync(
         {
           userId: createdUserInfo.id,
         },
-        this.refreshTokenSecretKey,
-        this.refreshTokenExpire,
+        {
+          secret: this.refreshTokenSecretKey,
+          expiresIn: this.refreshTokenExpire,
+        },
       );
 
       const userInfo = await this.userRepository.findUserById(
@@ -138,19 +138,24 @@ export class AuthService {
         );
       }
 
-      const accessToken = generateJwtToken(
+      const accessToken = await this.jwtService.signAsync(
         {
           userId: isUserFound.id,
         },
-        this.accessTokenSecretKey,
-        this.accessTokenExpire,
+        {
+          secret: this.accessTokenSecretKey,
+          expiresIn: this.accessTokenExpire,
+        },
       );
-      const refreshToken = generateJwtToken(
+
+      const refreshToken = await this.jwtService.signAsync(
         {
           userId: isUserFound.id,
         },
-        this.refreshTokenSecretKey,
-        this.refreshTokenExpire,
+        {
+          secret: this.refreshTokenSecretKey,
+          expiresIn: this.refreshTokenExpire,
+        },
       );
 
       const userInfo = await this.userRepository.findUserById(isUserFound.id, {
@@ -176,36 +181,38 @@ export class AuthService {
     try {
       const { refreshToken } = data;
 
-      const tokenData = await verifyToken<ITokenPayload>(
+      const tokenData = await this.jwtService.verifyAsync<ITokenPayload>(
         refreshToken,
-        this.refreshTokenSecretKey,
+        { secret: this.refreshTokenSecretKey },
       );
 
-      if (!tokenData.data?.userId) {
+      if (!tokenData?.userId) {
         throw new UnauthorizedException(ERROR_MSG.UNAUTHORIZED);
       }
 
-      const userInfo = await this.userRepository.findUserById(
-        tokenData.data.userId,
-      );
+      const userInfo = await this.userRepository.findUserById(tokenData.userId);
 
       if (userInfo.status !== USER_STATUS.ACTIVE) {
         throw new UnauthorizedException(ERROR_MSG.USER.ACCOUNT_NOT_ACTIVE);
       }
 
-      const accessToken = generateJwtToken(
+      const accessToken = await this.jwtService.signAsync(
         {
           userId: userInfo.id,
         },
-        this.accessTokenSecretKey,
-        this.accessTokenExpire,
+        {
+          secret: this.accessTokenSecretKey,
+          expiresIn: this.accessTokenExpire,
+        },
       );
-      const newRefreshToken = generateJwtToken(
+      const newRefreshToken = await this.jwtService.signAsync(
         {
           userId: userInfo.id,
         },
-        this.refreshTokenSecretKey,
-        this.refreshTokenExpire,
+        {
+          secret: this.refreshTokenSecretKey,
+          expiresIn: this.refreshTokenExpire,
+        },
       );
 
       return new ResponseResult({

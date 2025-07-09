@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC } from '../../common/constants';
 import { ERROR_MSG as AUTH_ERROR_MSG } from '../../modules/auth/messages';
 import { AuthService } from '../../modules/auth/auth.service';
-import { handleError, verifyToken } from '../../common/utils';
+import { handleError } from '../../common/utils';
 import { ITokenPayload } from 'src/modules/auth/interfaces';
 import { USER_STATUS } from 'src/modules/user/user.constant';
 
@@ -19,6 +20,7 @@ export class AuthGuard implements CanActivate {
     private readonly reflector: Reflector,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -48,22 +50,15 @@ export class AuthGuard implements CanActivate {
       const accessTokenSecretKey = this.configService.get<string>(
         'jwt.accessToken.secretKey',
       );
-      const decode = await verifyToken<ITokenPayload>(
-        token,
-        accessTokenSecretKey,
-      );
+      const decode = await this.jwtService.verifyAsync<ITokenPayload>(token, {
+        secret: accessTokenSecretKey,
+      });
 
-      if (decode.error) {
-        throw new UnauthorizedException(decode.error);
-      }
-
-      if (!decode.data?.userId) {
+      if (!decode?.userId) {
         throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
       }
 
-      const loginUserInfo = await this.authService.findUserById(
-        decode.data?.userId,
-      );
+      const loginUserInfo = await this.authService.findUserById(decode?.userId);
 
       if (!loginUserInfo) {
         throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
