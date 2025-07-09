@@ -19,7 +19,7 @@ import {
   SignupDto,
 } from './dtos';
 import { ITokenPayload } from './interfaces';
-import { USER_STATUS } from '../user/user.constant';
+import { UserStatus } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -57,7 +57,7 @@ export class AuthService {
         email,
         password: await createHash(password),
         name,
-        status: USER_STATUS.ACTIVE,
+        status: UserStatus.active,
       };
 
       const createdUserInfo =
@@ -132,7 +132,7 @@ export class AuthService {
         throw new BadRequestException(ERROR_MSG.INVALID_CREDENTIALS);
       }
 
-      if (isUserFound.status !== USER_STATUS.ACTIVE) {
+      if (isUserFound.status !== UserStatus.active) {
         throw new UnprocessableEntityException(
           ERROR_MSG.USER.ACCOUNT_NOT_ACTIVE,
         );
@@ -192,7 +192,7 @@ export class AuthService {
 
       const userInfo = await this.userRepository.findUserById(tokenData.userId);
 
-      if (userInfo.status !== USER_STATUS.ACTIVE) {
+      if (userInfo.status !== UserStatus.active) {
         throw new UnauthorizedException(ERROR_MSG.USER.ACCOUNT_NOT_ACTIVE);
       }
 

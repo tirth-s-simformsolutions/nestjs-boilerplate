@@ -12,7 +12,7 @@ import { ERROR_MSG as AUTH_ERROR_MSG } from '../../modules/auth/messages';
 import { AuthService } from '../../modules/auth/auth.service';
 import { handleError } from '../../common/utils';
 import { ITokenPayload } from 'src/modules/auth/interfaces';
-import { USER_STATUS } from 'src/modules/user/user.constant';
+import { UserStatus } from '@prisma/client';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -64,7 +64,7 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
       }
 
-      if (loginUserInfo.status !== USER_STATUS.ACTIVE) {
+      if (loginUserInfo.status !== UserStatus.active) {
         throw new UnauthorizedException(AUTH_ERROR_MSG.USER.ACCOUNT_NOT_ACTIVE);
       }
 
