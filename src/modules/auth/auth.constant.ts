@@ -4,8 +4,3 @@ export const PASSWORD_REGEX =
 export const USERNAME_REGEX = /^[a-z0-9_]{4,12}$/;
 
 export const PASSWORD_DEFAULT_MIN_LENGTH = 8;
-
-export enum TOKEN_TYPE {
-  ACCESS_TOKEN = 'accessToken',
-  REFRESH_TOKEN = 'refreshToken',
-}

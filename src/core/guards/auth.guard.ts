@@ -12,7 +12,6 @@ import { AuthService } from '../../modules/auth/auth.service';
 import { handleError, verifyToken } from '../../common/utils';
 import { ITokenPayload } from 'src/modules/auth/interfaces';
 import { USER_STATUS } from 'src/modules/user/user.constant';
-import { TOKEN_TYPE } from 'src/modules/auth/auth.constant';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -58,10 +57,7 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException(decode.error);
       }
 
-      if (
-        !decode.data?.userId ||
-        decode.data?.tokenType !== TOKEN_TYPE.ACCESS_TOKEN
-      ) {
+      if (!decode.data?.userId) {
         throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
       }
 

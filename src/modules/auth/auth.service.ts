@@ -26,7 +26,6 @@ import {
 } from './dtos';
 import { ITokenPayload } from './interfaces';
 import { USER_STATUS } from '../user/user.constant';
-import { TOKEN_TYPE } from './auth.constant';
 
 @Injectable()
 export class AuthService {
@@ -72,7 +71,6 @@ export class AuthService {
       const accessToken = generateJwtToken(
         {
           userId: createdUserInfo.id,
-          tokenType: TOKEN_TYPE.ACCESS_TOKEN,
         },
         this.accessTokenSecretKey,
         this.accessTokenExpire,
@@ -80,7 +78,6 @@ export class AuthService {
       const refreshToken = generateJwtToken(
         {
           userId: createdUserInfo.id,
-          tokenType: TOKEN_TYPE.REFRESH_TOKEN,
         },
         this.refreshTokenSecretKey,
         this.refreshTokenExpire,
@@ -144,7 +141,6 @@ export class AuthService {
       const accessToken = generateJwtToken(
         {
           userId: isUserFound.id,
-          tokenType: TOKEN_TYPE.ACCESS_TOKEN,
         },
         this.accessTokenSecretKey,
         this.accessTokenExpire,
@@ -152,7 +148,6 @@ export class AuthService {
       const refreshToken = generateJwtToken(
         {
           userId: isUserFound.id,
-          tokenType: TOKEN_TYPE.REFRESH_TOKEN,
         },
         this.refreshTokenSecretKey,
         this.refreshTokenExpire,
@@ -186,10 +181,7 @@ export class AuthService {
         this.refreshTokenSecretKey,
       );
 
-      if (
-        !tokenData.data?.userId ||
-        tokenData.data?.tokenType !== TOKEN_TYPE.REFRESH_TOKEN
-      ) {
+      if (!tokenData.data?.userId) {
         throw new UnauthorizedException(ERROR_MSG.UNAUTHORIZED);
       }
 
@@ -204,7 +196,6 @@ export class AuthService {
       const accessToken = generateJwtToken(
         {
           userId: userInfo.id,
-          tokenType: TOKEN_TYPE.ACCESS_TOKEN,
         },
         this.accessTokenSecretKey,
         this.accessTokenExpire,
@@ -212,7 +203,6 @@ export class AuthService {
       const newRefreshToken = generateJwtToken(
         {
           userId: userInfo.id,
-          tokenType: TOKEN_TYPE.REFRESH_TOKEN,
         },
         this.refreshTokenSecretKey,
         this.refreshTokenExpire,
