@@ -5,8 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC } from '../../common/constants';
 import { ERROR_MSG as AUTH_ERROR_MSG } from '../../modules/auth/messages';
 import { AuthService } from '../../modules/auth/auth.service';
@@ -17,8 +15,6 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

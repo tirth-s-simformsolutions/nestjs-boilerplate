@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
 import {
   HttpStatus,
   INestApplication,
@@ -11,8 +10,8 @@ import helmet from 'helmet';
 import * as sentry from '@sentry/node';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { isProduction } from './common/utils';
 import { ENV } from './common/constants';
+import { AppModule } from './app/app.module';
 
 const configureSwagger = (app: INestApplication): void => {
   const swaggerOptions = new DocumentBuilder()
@@ -84,7 +83,7 @@ const bootstrap = async (): Promise<void> => {
   });
 
   // swagger setup
-  if (!isProduction(configService)) {
+  if (configService.get<string>('app.env') !== ENV.PRODUCTION) {
     configureSwagger(app);
   }
 

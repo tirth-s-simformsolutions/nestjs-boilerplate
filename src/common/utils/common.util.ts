@@ -1,29 +1,13 @@
 import { HttpException, InternalServerErrorException } from '@nestjs/common';
-import * as sentry from '@sentry/node';
-import { ConfigService } from '@nestjs/config';
-import { ENV } from '../constants';
+import { validateSync } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { EnvVariablesDto } from '../dtos';
-import { validateSync } from 'class-validator';
-
-export const isProduction = (configService: ConfigService): boolean =>
-  configService.get<string>('app.env') === ENV.PRODUCTION;
-
-export const isDev = (configService: ConfigService): boolean =>
-  configService.get<string>('app.env') === ENV.DEV ||
-  configService.get<string>('app.env') === ENV.LOCAL;
 
 export const handleError = (error: Error): void => {
   if (error instanceof HttpException) {
     throw new HttpException({ message: error.message }, error.getStatus());
   } else {
     throw new InternalServerErrorException(error);
-  }
-};
-
-export const captureSentryException = (env: string, error: Error) => {
-  if (env === ENV.PRODUCTION || env === ENV.STAGING) {
-    sentry.captureException(error);
   }
 };
 

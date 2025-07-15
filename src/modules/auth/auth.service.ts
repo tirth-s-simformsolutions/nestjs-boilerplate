@@ -265,12 +265,6 @@ export class AuthService {
     }
   }
 
-  async findUserById(userId: string) {
-    const userInfo = await this.userRepository.findUserById(userId);
-
-    return userInfo;
-  }
-
   async validateAccessToken(token: string) {
     try {
       // check token
@@ -286,7 +280,9 @@ export class AuthService {
         throw new UnauthorizedException(ERROR_MSG.UNAUTHORIZED);
       }
 
-      const loginUserInfo = await this.findUserById(decode?.userId);
+      const loginUserInfo = await this.userRepository.findUserById(
+        decode?.userId,
+      );
 
       if (!loginUserInfo) {
         throw new UnauthorizedException(ERROR_MSG.UNAUTHORIZED);

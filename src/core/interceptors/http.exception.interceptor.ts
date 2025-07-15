@@ -41,24 +41,20 @@ export class HttpExceptionsFilter implements ExceptionFilter {
       if (env === ENV.PRODUCTION || env === ENV.STAGING) {
         sentry.captureException(exception);
       }
-      return this.handleGenericException(response, i18n);
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: this.translateErrorMessage(
+          ERROR_MSG.SERVER.INTERNAL_SERVER,
+          i18n,
+        ),
+        data: null,
+        error: null,
+      });
     }
-  }
-
-  private handleGenericException(
-    res: Response,
-    i18n: I18nContext,
-  ): Response<string, Record<string, unknown>> {
-    return this.sendErrorResponse(
-      res,
-      HttpStatus.INTERNAL_SERVER_ERROR,
-      this.translateErrorMessage(ERROR_MSG.SERVER.INTERNAL_SERVER, i18n),
-    );
   }
 
   private handleHttpException(
     exception: HttpException,
-    res: Response,
+    response: Response,
     i18n: I18nContext,
   ): Response<string, Record<string, unknown>> {
     const errMsg = exception.message;
@@ -67,39 +63,49 @@ export class HttpExceptionsFilter implements ExceptionFilter {
       statusCode === HttpStatus.INTERNAL_SERVER_ERROR &&
       errMsg.toLowerCase().includes('unique constraint')
     ) {
-      return this.sendErrorResponse(
-        res,
-        409,
-        this.translateErrorMessage(ERROR_MSG.DB.VALIDATION.UQ_ERROR, i18n),
-      );
+      return response.status(HttpStatus.CONFLICT).json({
+        message: this.translateErrorMessage(
+          ERROR_MSG.DB.VALIDATION.UQ_ERROR,
+          i18n,
+        ),
+        data: null,
+        error: null,
+      });
     }
 
     if (
       statusCode === HttpStatus.INTERNAL_SERVER_ERROR &&
       errMsg.toLowerCase().includes('foreign key constraint')
     ) {
-      return this.sendErrorResponse(
-        res,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        this.translateErrorMessage(ERROR_MSG.DB.VALIDATION.FK_ERROR, i18n),
-      );
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: this.translateErrorMessage(
+          ERROR_MSG.DB.VALIDATION.FK_ERROR,
+          i18n,
+        ),
+        data: null,
+        error: null,
+      });
     }
 
     if (statusCode === HttpStatus.INTERNAL_SERVER_ERROR) {
-      return this.sendErrorResponse(
-        res,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        this.translateErrorMessage(ERROR_MSG.SERVER.INTERNAL_SERVER, i18n),
-      );
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: this.translateErrorMessage(
+          ERROR_MSG.SERVER.INTERNAL_SERVER,
+          i18n,
+        ),
+        data: null,
+        error: null,
+      });
     }
 
     if (exception instanceof NotFoundException) {
-      return this.sendErrorResponse(
-        res,
-        HttpStatus.NOT_FOUND,
-        this.translateErrorMessage(ERROR_MSG.SERVER.PAGE_NOT_FOUND, i18n) ||
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message:
+          this.translateErrorMessage(ERROR_MSG.SERVER.PAGE_NOT_FOUND, i18n) ||
           'Page not found',
-      );
+        data: null,
+        error: null,
+      });
     }
 
     if (exception instanceof BadRequestException) {
@@ -117,18 +123,18 @@ export class HttpExceptionsFilter implements ExceptionFilter {
         translatedErrors.push(translatedError);
       }
       const latestTranslatedError = translatedErrors.reverse()[0];
-      return this.sendErrorResponse(
-        res,
-        exception.getStatus(),
-        latestTranslatedError,
-      );
+      return response.status(exception.getStatus()).json({
+        message: latestTranslatedError,
+        data: null,
+        error: null,
+      });
     }
 
-    return this.sendErrorResponse(
-      res,
-      statusCode,
-      this.translateErrorMessage(errMsg, i18n),
-    );
+    return response.status(statusCode).json({
+      message: this.translateErrorMessage(errMsg, i18n),
+      data: null,
+      error: null,
+    });
   }
 
   private translateErrorMessage(
@@ -152,17 +158,5 @@ export class HttpExceptionsFilter implements ExceptionFilter {
       args = undefined;
     }
     return i18n ? i18n?.translate(translationKey, args) : translationKey;
-  }
-
-  private sendErrorResponse(
-    res: Response,
-    statusCode: number,
-    message: string,
-  ): Response<string, Record<string, unknown>> {
-    return res.status(statusCode).json({
-      message,
-      data: null,
-      error: null,
-    });
   }
 }
