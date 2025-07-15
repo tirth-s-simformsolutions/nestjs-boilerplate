@@ -8,7 +8,6 @@ import {
   HttpExceptionsFilter,
   ResponseInterceptor,
 } from '../core/interceptors';
-import { DatabaseModule } from '../database/database.module';
 import { AuthModule } from '../modules/auth/auth.module';
 import { AuthGuard, CustomThrottlerGuard } from '../core/guards';
 import { UserModule } from '../modules/user/user.module';
@@ -19,6 +18,7 @@ import { HealthService, LoggerService } from '../common/services';
 import { validateEnvVariables } from '../common/utils';
 import { TraceMiddleware } from '../core/middleware';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Module({
   imports: [
@@ -31,7 +31,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
       resolvers: [AcceptLanguageResolver],
       useFactory: () => ({
         fallbackLanguage: 'en',
-        loaderOptions: { path: join(__dirname, '../../i18n/'), watch: true },
+        loaderOptions: { path: join(__dirname, '../i18n/'), watch: true },
       }),
     }),
     ThrottlerModule.forRoot({
@@ -42,13 +42,13 @@ import { ThrottlerModule } from '@nestjs/throttler';
         },
       ],
     }),
-    DatabaseModule,
     AuthModule,
     UserModule,
   ],
   controllers: [AppController],
   providers: [
     HealthService,
+    PrismaService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,

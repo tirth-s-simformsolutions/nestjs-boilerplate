@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { handleError } from '../../common/utils';
 import { ResponseResult } from '../../core/class/';
-import { UserRepository } from '../../database/repositories';
 import { SUCCESS_MSG } from './messages';
 import { UpdateProfileDto } from './dtos';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {

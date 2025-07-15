@@ -6,7 +6,7 @@
     "build": "npm run prisma:generate && nest build",
     "prettier:check": "prettier --check \"{src,apps,test}/**/*.ts\"",
     "prettier": "prettier --write \"{src,apps,test}/**/*.ts\"",
-    "start": "node dist/src/main",
+    "start": "node dist/main",
     "dev": "npm run prisma:migrate && nest start",
     "dev:watch": "nest start --watch",
     "lint:check": "eslint \"{src,apps,test}/**/*.ts\"",
@@ -16,7 +16,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "ts-node prisma/seed.ts",
+    "prisma:seed": "ts-node src/database/seed.ts",
     "db:reset": "prisma migrate reset --force"
   },
   "dependencies": {
@@ -88,5 +88,8 @@
   "engines": {
     "node": ">=22.15.0",
     "npm": ">=10.9.2"
+  },
+  "prisma": {
+    "schema": "src/database/schema.prisma"
   }
 }

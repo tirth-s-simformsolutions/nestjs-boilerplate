@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UserStatus } from '@prisma/client';
 import { handleError, compareHash, createHash } from '../../common/utils';
-import { UserRepository } from '../../database/repositories';
 import { ERROR_MSG, SUCCESS_MSG } from './messages';
 import { ResponseResult } from '../../core/class/';
 import {
@@ -19,7 +19,7 @@ import {
   SignupDto,
 } from './dtos';
 import { ITokenPayload } from './interfaces';
-import { UserStatus } from '@prisma/client';
+import { UserRepository } from '../user/user.repository';
 
 @Injectable()
 export class AuthService {
