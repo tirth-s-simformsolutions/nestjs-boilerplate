@@ -4,13 +4,15 @@ All the apis were built using [Nest js](https://github.com/nestjs/nest) framewor
 
 ## Requirements :
 
-- [Node v22.15.0](https://nodejs.org/en/download)
+- [Volta](https://volta.sh/) for Node.js version management (or Node v22.15.0)
 - [PostgreSQL v16](https://www.postgresql.org/)
 
 ## Pre-requisites :
 
-- Install Node.js v22.15.0
+- Install [Volta](https://volta.sh/) for automatic Node.js version management, or manually install Node.js v22.15.0
 - Create a postgreSQL Database and setup the database.
+
+**Note**: If you have Volta installed, the correct Node.js and npm versions will be automatically selected when you enter the project directory.
 
 ## Getting Started :
 
