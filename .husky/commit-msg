@@ -1,15 +1,1 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-if ! head -1 "$1" | grep -qE "^(feat|fix|ci|chore|docs|test|style|refactor|pref|build|revert)(\(.+?\))?: .{1,}$"; then
-    echo "Aborting commit. Your commit message is invalid. Message format should be 'feat|fix|ci|chore|docs|test|style|refactor|pref|build|revert: <message>'" >&2
-    exit 1
-fi
-if ! head -1 "$1" | grep -qE "^.{1,88}$"; then
-    echo "Aborting commit. Your commit message is too long." >&2
-    exit 1
-fi
-if [ $? -ne 0 ]; then
-  echo "Error: Unused imports found. Please fix them before committing."
-  exit 1
-fi
+npx --no-install commitlint --edit "$1"
