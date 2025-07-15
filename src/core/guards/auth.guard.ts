@@ -11,8 +11,6 @@ import { IS_PUBLIC } from '../../common/constants';
 import { ERROR_MSG as AUTH_ERROR_MSG } from '../../modules/auth/messages';
 import { AuthService } from '../../modules/auth/auth.service';
 import { handleError } from '../../common/utils';
-import { ITokenPayload } from 'src/modules/auth/interfaces';
-import { UserStatus } from '@prisma/client';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -42,44 +40,13 @@ export class AuthGuard implements CanActivate {
       }
       const token = authToken.replace('Bearer ', '')?.trim();
 
-      // check token
-      if (!token) {
-        throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
-      }
+      const userInfo = await this.authService.validateAccessToken(token);
 
-      const accessTokenSecretKey = this.configService.get<string>(
-        'jwt.accessToken.secretKey',
-      );
-      const decode = await this.jwtService.verifyAsync<ITokenPayload>(token, {
-        secret: accessTokenSecretKey,
-      });
-
-      if (!decode?.userId) {
-        throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
-      }
-
-      const loginUserInfo = await this.authService.findUserById(decode?.userId);
-
-      if (!loginUserInfo) {
-        throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
-      }
-
-      if (loginUserInfo.status !== UserStatus.active) {
-        throw new UnauthorizedException(AUTH_ERROR_MSG.USER.ACCOUNT_NOT_ACTIVE);
-      }
-
-      request.userId = loginUserInfo.id;
-      request.name = loginUserInfo.name;
+      request.userId = userInfo.userId;
+      request.name = userInfo.name;
 
       return true;
     } catch (error) {
-      if (
-        error?.name === 'TokenExpiredError' ||
-        error?.name === 'JsonWebTokenError' ||
-        (error?.message && error?.message === 'jwt expired')
-      ) {
-        handleError(new UnauthorizedException(AUTH_ERROR_MSG.TOKEN_EXPIRED));
-      }
       handleError(error);
     }
   }

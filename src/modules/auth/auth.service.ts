@@ -270,4 +270,45 @@ export class AuthService {
 
     return userInfo;
   }
+
+  async validateAccessToken(token: string) {
+    try {
+      // check token
+      if (!token) {
+        throw new UnauthorizedException(ERROR_MSG.UNAUTHORIZED);
+      }
+
+      const decode = await this.jwtService.verifyAsync<ITokenPayload>(token, {
+        secret: this.accessTokenSecretKey,
+      });
+
+      if (!decode?.userId) {
+        throw new UnauthorizedException(ERROR_MSG.UNAUTHORIZED);
+      }
+
+      const loginUserInfo = await this.findUserById(decode?.userId);
+
+      if (!loginUserInfo) {
+        throw new UnauthorizedException(ERROR_MSG.UNAUTHORIZED);
+      }
+
+      if (loginUserInfo.status !== UserStatus.active) {
+        throw new UnauthorizedException(ERROR_MSG.USER.ACCOUNT_NOT_ACTIVE);
+      }
+
+      return {
+        userId: loginUserInfo.id,
+        name: loginUserInfo.name,
+      };
+    } catch (error) {
+      if (
+        error?.name === 'TokenExpiredError' ||
+        error?.name === 'JsonWebTokenError' ||
+        (error?.message && error?.message === 'jwt expired')
+      ) {
+        handleError(new UnauthorizedException(ERROR_MSG.TOKEN_EXPIRED));
+      }
+      handleError(error);
+    }
+  }
 }
