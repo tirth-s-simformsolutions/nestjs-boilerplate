@@ -1,1 +1,2 @@
+npm run type:check-files
 npx lint-staged

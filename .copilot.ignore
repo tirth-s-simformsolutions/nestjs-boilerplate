@@ -1,0 +1,259 @@
+# =============================================================================
+# SECURITY GUIDELINES FOR .copilot.ignore
+# =============================================================================
+# This file prevents sensitive information from being exposed in GitHub Copilot
+# chat and suggestions. Add patterns for any files containing secrets, keys,
+# passwords, or other confidential data.
+#
+# IMPORTANT: This file uses gitignore-style patterns
+# - Use * for wildcards
+# - Use ** for recursive directory matching
+# - Use ! to negate patterns (include files that would otherwise be ignored)
+# - Lines starting with # are comments
+# =============================================================================
+
+# =============================================================================
+# ENVIRONMENT VARIABLES & CONFIGURATION FILES
+# =============================================================================
+# All environment files (various naming conventions)
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
+.environment
+environment.*
+config.env
+*.env
+
+# Configuration files that may contain secrets
+config/secrets.*
+config/credentials.*
+config/production.*
+config/local.*
+secrets.*
+credentials.*
+
+# =============================================================================
+# AUTHENTICATION & SECURITY FILES
+# =============================================================================
+# Private keys and certificates
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.jks
+*.keystore
+*.truststore
+
+# SSH keys
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*.pub
+ssh_config
+known_hosts
+
+# GPG keys
+*.gpg
+*.asc
+secring.*
+pubring.*
+
+# =============================================================================
+# DATABASE & SERVICE CREDENTIALS
+# =============================================================================
+# Database connection files
+database.yml
+database.json
+db.config.*
+connection.config.*
+
+# Service account files
+service-account*.json
+*.service-account.json
+gcp-*.json
+aws-credentials
+azure-credentials
+
+# =============================================================================
+# API KEYS & TOKENS
+# =============================================================================
+# Files commonly containing API keys
+api-keys.*
+tokens.*
+auth-tokens.*
+access-tokens.*
+refresh-tokens.*
+
+# =============================================================================
+# DOCKER & DEPLOYMENT SECRETS
+# =============================================================================
+# Docker secrets (but keep example/template files)
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.prod.yml
+*.secrets.yml
+secrets.yaml
+
+# Kubernetes secrets
+**/secrets/
+k8s-secrets.*
+kube-config
+
+# =============================================================================
+# CLOUD PROVIDER CREDENTIALS
+# =============================================================================
+# AWS
+.aws/credentials
+.aws/config
+aws-exports.js
+
+# Google Cloud
+.gcloud/
+gcloud-service-key.json
+google-credentials.json
+
+# Azure
+.azure/
+azure.json
+
+# =============================================================================
+# CI/CD & BUILD SECRETS
+# =============================================================================
+# GitHub Actions secrets (local copies)
+.github/secrets/
+github-token.*
+
+# Jenkins
+jenkins.properties
+
+# GitLab CI
+.gitlab-ci-local.yml
+
+# =============================================================================
+# TEMPORARY & LOG FILES THAT MAY CONTAIN SECRETS
+# =============================================================================
+# Log files that might contain sensitive data
+*.log
+logs/
+**/logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+temp/
+
+# Cache directories that might store sensitive data
+.cache/
+*.cache
+cache/
+
+# =============================================================================
+# BACKUP & DUMP FILES
+# =============================================================================
+# Database dumps
+*.sql
+*.dump
+*.backup
+database-backup.*
+db-dump.*
+
+# Application backups
+backup/
+backups/
+*.backup.*
+
+# =============================================================================
+# IDE & EDITOR FILES WITH POTENTIALLY SENSITIVE DATA
+# =============================================================================
+# VSCode settings that might contain tokens
+.vscode/settings.json
+.vscode/launch.json
+
+# IntelliJ/WebStorm
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/shelf/
+
+# =============================================================================
+# PACKAGE MANAGER FILES WITH CREDENTIALS
+# =============================================================================
+# NPM
+.npmrc
+.npm/
+npm-shrinkwrap.json
+
+# Yarn
+.yarnrc
+.yarn/
+yarn.lock
+
+# =============================================================================
+# TEST FILES WITH SENSITIVE DATA
+# =============================================================================
+# Test files that might contain real credentials
+test/fixtures/credentials.*
+test/fixtures/secrets.*
+test/fixtures/*.env
+e2e/credentials.*
+spec/fixtures/credentials.*
+
+# =============================================================================
+# VENDOR & THIRD-PARTY FILES
+# =============================================================================
+# Node modules (might contain secrets in postinstall scripts)
+node_modules/
+vendor/
+
+# =============================================================================
+# CUSTOM PATTERNS FOR THIS NESTJS PROJECT
+# =============================================================================
+# Prisma-specific files that might contain connection strings
+# (but keep schema.prisma as it should not contain actual credentials)
+.prisma/
+prisma/.env
+
+# Custom seed files that might contain real data
+src/database/seed-production.*
+src/database/real-data.*
+
+# JWT key files
+jwt-*.key
+jwt-*.pem
+jwt-secret.*
+
+# Session secrets
+session-secret.*
+session.key
+
+# =============================================================================
+# EXAMPLES TO KEEP (NEGATE PATTERNS)
+# =============================================================================
+# Keep example and template files (these should never contain real secrets)
+!.env.example
+!.example.env
+!*.example.*
+!**/examples/
+!**/templates/
+!**/*.template.*
+!**/*.sample.*
+
+# Keep documentation
+!README*
+!SECURITY.md
+!CONTRIBUTING.md
+
+# =============================================================================
+# END OF SECURITY GUIDELINES
+# =============================================================================
