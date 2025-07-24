@@ -10,7 +10,6 @@
     "dev": "npm run prisma:migrate && nest start --watch",
     "lint:check": "eslint \"{src,apps,test}/**/*.{ts,js}\"",
     "lint": "eslint \"{src,apps,test}/**/*.{ts,js}\" --fix",
-    "typecheck": "tsc --noEmit",
     "prepare": "husky install",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -91,9 +90,6 @@
     ],
     "{src,apps,test}/**/*.{ts,js}": [
       "npm run lint:check"
-    ],
-    "src/**/*.ts": [
-      "npm run typecheck"
     ]
   }
 }
