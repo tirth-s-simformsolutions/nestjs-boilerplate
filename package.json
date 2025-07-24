@@ -10,8 +10,7 @@
     "dev": "npm run prisma:migrate && nest start --watch",
     "lint:check": "eslint \"{src,apps,test}/**/*.{ts,js}\"",
     "lint": "eslint \"{src,apps,test}/**/*.{ts,js}\" --fix",
-    "type:check": "tsc --noEmit",
-    "type:check-files": "tsc --noEmit --skipLibCheck",
+    "typecheck": "tsc --noEmit",
     "prepare": "husky install",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -88,11 +87,13 @@
   },
   "lint-staged": {
     "{src,apps,test}/**/*.{ts,json,js}": [
-      "npm run prettier",
+      "npm run prettier"
+    ],
+    "{src,apps,test}/**/*.{ts,js}": [
       "npm run lint:check"
     ],
     "src/**/*.ts": [
-      "bash -c 'npm run type:check'"
+      "npm run typecheck"
     ]
   }
 }

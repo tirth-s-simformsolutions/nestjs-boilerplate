@@ -1,6 +1,5 @@
 import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -16,6 +15,7 @@ import {
   ChangePasswordResponseDto,
   LoginDto,
   LoginResponseDto,
+  LogoutResponseDto,
   RefreshTokenResponseDto,
   SignupDto,
   SignupResponseDto,
@@ -79,6 +79,7 @@ export class AuthController {
   })
   @ApiOkResponse({
     description: 'Logout successful',
+    type: LogoutResponseDto,
   })
   @Post('/logout')
   logout(@Res({ passthrough: true }) res: Response) {
@@ -86,7 +87,6 @@ export class AuthController {
   }
 
   @ApiTags(SWAGGER_TAGS.AUTH)
-  @ApiBearerAuth('Authorization')
   @ApiOperation({
     summary: 'Change password API',
     description: 'This API is used to change password',
