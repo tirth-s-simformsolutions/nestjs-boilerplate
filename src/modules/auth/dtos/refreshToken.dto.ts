@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { VALIDATION_MSG } from 'src/common/messages';
+import { VALIDATION_MSG } from '../../../common/messages';
 
 export class RefreshTokenDto {
   @ApiProperty({ example: 'refresh token' })

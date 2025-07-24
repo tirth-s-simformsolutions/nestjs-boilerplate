@@ -12,6 +12,7 @@ module.exports = {
     '!**/*.module.ts',
     '!**/*.constant.ts',
     '!**/*.interface.ts',
+    '!**/*.interceptor.ts',
     '!**/*.dto.ts',
     '!**/main.ts',
     '!**/index.ts',

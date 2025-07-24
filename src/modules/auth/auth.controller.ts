@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -6,20 +6,20 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Request, Response } from 'express';
 import { SWAGGER_TAGS } from '../../common/constants';
+import { ICurrentUser } from '../../common/interfaces';
+import { CurrentUser, Public } from '../../core/decorators';
 import { AuthService } from './auth.service';
 import {
-  SignupResponseDto,
-  SignupDto,
-  LoginResponseDto,
-  LoginDto,
-  RefreshTokenDto,
-  RefreshTokenResponseDto,
-  ChangePasswordResponseDto,
   ChangePasswordDto,
+  ChangePasswordResponseDto,
+  LoginDto,
+  LoginResponseDto,
+  RefreshTokenResponseDto,
+  SignupDto,
+  SignupResponseDto,
 } from './dtos';
-import { CurrentUser, Public } from '../../core/decorators';
-import { ICurrentUser } from '../../common/interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -36,8 +36,8 @@ export class AuthController {
   })
   @Public()
   @Post('/signup')
-  signup(@Body() data: SignupDto) {
-    return this.authService.signup(data);
+  signup(@Body() data: SignupDto, @Res({ passthrough: true }) res: Response) {
+    return this.authService.signup(data, res);
   }
 
   @ApiTags(SWAGGER_TAGS.AUTH)
@@ -51,8 +51,8 @@ export class AuthController {
   })
   @Public()
   @Post('/login')
-  login(@Body() data: LoginDto) {
-    return this.authService.login(data);
+  login(@Body() data: LoginDto, @Res({ passthrough: true }) res: Response) {
+    return this.authService.login(data, res);
   }
 
   @ApiTags(SWAGGER_TAGS.AUTH)
@@ -67,8 +67,22 @@ export class AuthController {
   })
   @Public()
   @Post('/refresh-token')
-  refreshToken(@Body() data: RefreshTokenDto) {
-    return this.authService.refreshToken(data);
+  refreshToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const refreshToken = req.cookies?.refresh_token;
+    return this.authService.refreshToken(refreshToken, res);
+  }
+
+  @ApiTags(SWAGGER_TAGS.AUTH)
+  @ApiOperation({
+    summary: 'Logout API',
+    description: 'This API is used to logout and clear cookies',
+  })
+  @ApiOkResponse({
+    description: 'Logout successful',
+  })
+  @Post('/logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    return this.authService.logout(res);
   }
 
   @ApiTags(SWAGGER_TAGS.AUTH)

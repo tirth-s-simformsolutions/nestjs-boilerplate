@@ -1,4 +1,3 @@
-import { NestFactory } from '@nestjs/core';
 import {
   HttpStatus,
   INestApplication,
@@ -6,12 +5,14 @@ import {
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
-import helmet from 'helmet';
-import * as sentry from '@sentry/node';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ENV } from './common/constants';
+import * as sentry from '@sentry/node';
+import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app/app.module';
+import { ENV } from './common/constants';
 
 const configureSwagger = (app: INestApplication): void => {
   const swaggerOptions = new DocumentBuilder()
@@ -50,6 +51,9 @@ const bootstrap = async (): Promise<void> => {
 
   const app: INestApplication = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
+
+  // Enable cookie parsing
+  app.use(cookieParser());
 
   // setup cors
   app.enableCors({

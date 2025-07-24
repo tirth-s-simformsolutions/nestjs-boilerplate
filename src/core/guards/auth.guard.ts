@@ -1,14 +1,14 @@
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC } from '../../common/constants';
-import { ERROR_MSG as AUTH_ERROR_MSG } from '../../modules/auth/messages';
-import { AuthService } from '../../modules/auth/auth.service';
 import { handleError } from '../../common/utils';
+import { AuthService } from '../../modules/auth/auth.service';
+import { ERROR_MSG as AUTH_ERROR_MSG } from '../../modules/auth/messages';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -30,11 +30,12 @@ export class AuthGuard implements CanActivate {
         return true;
       }
 
-      const authToken = request.headers['authorization'];
-      if (!authToken) {
+      // Get token from cookies instead of authorization header
+      const token = request.cookies?.access_token;
+
+      if (!token) {
         throw new UnauthorizedException(AUTH_ERROR_MSG.UNAUTHORIZED);
       }
-      const token = authToken.replace('Bearer ', '')?.trim();
 
       const userInfo = await this.authService.validateAccessToken(token);
 

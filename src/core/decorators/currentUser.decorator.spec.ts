@@ -28,7 +28,7 @@ describe('CurrentUser Decorator', () => {
     } as unknown as ExecutionContext;
 
     // Test the actual callback logic
-    const result = CurrentUser(undefined, mockExecutionContext);
+    const result = getCurrentUserCallback(undefined, mockExecutionContext);
 
     expect(result).toEqual({ userId: '123', name: 'John Doe' });
     expect(mockSwitchToHttp).toHaveBeenCalled();
