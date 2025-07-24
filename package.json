@@ -11,6 +11,13 @@
     "lint:check": "eslint \"{src,apps,test}/**/*.{ts,js}\"",
     "lint": "eslint \"{src,apps,test}/**/*.{ts,js}\" --fix",
     "prepare": "husky install",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e:watch": "jest --config ./test/jest-e2e.json --watch",
+    "test:e2e:cov": "jest --config ./test/jest-e2e.json --coverage",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
@@ -31,6 +38,7 @@
     "axios": "^1.7.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "cookie-parser": "^1.4.7",
     "dayjs": "^1.11.13",
     "helmet": "^7.1.0",
     "nestjs-i18n": "^10.4.5",
@@ -43,11 +51,14 @@
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
+    "@types/cookie-parser": "^1.4.9",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/node": "^24.1.0",
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "dotenv": "^17.2.0",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
@@ -56,26 +67,11 @@
     "lint-staged": "^16.1.2",
     "prettier": "^3.0.0",
     "prisma": "^6.7.0",
+    "supertest": "^7.1.4",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   },
   "engines": {
     "node": ">=22.15.0",
@@ -90,7 +86,9 @@
   },
   "lint-staged": {
     "{src,apps,test}/**/*.{ts,json,js}": [
-      "npm run prettier",
+      "npm run prettier"
+    ],
+    "{src,apps,test}/**/*.{ts,js}": [
       "npm run lint:check"
     ]
   }

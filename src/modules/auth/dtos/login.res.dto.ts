@@ -13,12 +13,6 @@ class UserInfoDto {
 }
 
 class UserAndTokenDataDto {
-  @ApiProperty({ example: 'access token' })
-  accessToken: string;
-
-  @ApiProperty({ example: 'refresh token' })
-  refreshToken: string;
-
   @ApiProperty({ type: UserInfoDto })
   userInfo: UserInfoDto;
 }

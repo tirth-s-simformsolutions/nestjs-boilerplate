@@ -9,17 +9,17 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserStatus } from '@prisma/client';
-import { handleError, compareHash, createHash } from '../../common/utils';
-import { ERROR_MSG, SUCCESS_MSG } from './messages';
+import { Response } from 'express';
+import { compareHash, createHash, handleError } from '../../common/utils';
 import { ResponseResult } from '../../core/class/';
-import {
-  ChangePasswordDto,
-  LoginDto,
-  RefreshTokenDto,
-  SignupDto,
-} from './dtos';
-import { ITokenPayload } from './interfaces';
 import { UserRepository } from '../user/user.repository';
+import { ChangePasswordDto, LoginDto, SignupDto } from './dtos';
+import {
+  ICookieConfig,
+  ITokenPayload,
+  IUserValidationResult,
+} from './interfaces';
+import { ERROR_MSG, SUCCESS_MSG } from './messages';
 
 @Injectable()
 export class AuthService {
@@ -46,7 +46,50 @@ export class AuthService {
     );
   }
 
-  async signup(data: SignupDto) {
+  private setTokenCookies(
+    res: Response,
+    accessToken: string,
+    refreshToken: string,
+  ): void {
+    const cookieConfig: Omit<ICookieConfig, 'maxAge'> = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    };
+
+    // Set access token cookie
+    res.cookie('access_token', accessToken, {
+      ...cookieConfig,
+      maxAge: this.getTokenExpiry(this.accessTokenExpire),
+    });
+
+    // Set refresh token cookie
+    res.cookie('refresh_token', refreshToken, {
+      ...cookieConfig,
+      maxAge: this.getTokenExpiry(this.refreshTokenExpire),
+    });
+  }
+
+  private getTokenExpiry(expire: string | number): number {
+    if (typeof expire === 'number') return expire * 1000;
+
+    // Parse string like "15m", "7d", etc.
+    const unit = expire.slice(-1);
+    const value = parseInt(expire.slice(0, -1));
+
+    switch (unit) {
+      case 'm':
+        return value * 60 * 1000; // minutes
+      case 'h':
+        return value * 60 * 60 * 1000; // hours
+      case 'd':
+        return value * 24 * 60 * 60 * 1000; // days
+      default:
+        return 15 * 60 * 1000; // default 15 minutes
+    }
+  }
+
+  async signup(data: SignupDto, res: Response) {
     try {
       const { email, password, name } = data;
 
@@ -92,12 +135,13 @@ export class AuthService {
         },
       );
 
+      // Set tokens in cookies
+      this.setTokenCookies(res, accessToken, refreshToken);
+
       return new ResponseResult({
         message: SUCCESS_MSG.USER.CREATED,
         statusCode: HttpStatus.CREATED,
         data: {
-          accessToken,
-          refreshToken,
           userInfo,
         },
       });
@@ -116,7 +160,7 @@ export class AuthService {
     }
   }
 
-  async login(data: LoginDto) {
+  async login(data: LoginDto, res: Response) {
     try {
       const { email, password } = data;
 
@@ -164,11 +208,12 @@ export class AuthService {
         name: true,
       });
 
+      // Set tokens in cookies
+      this.setTokenCookies(res, accessToken, refreshToken);
+
       return new ResponseResult({
         message: SUCCESS_MSG.USER.LOGIN,
         data: {
-          accessToken,
-          refreshToken,
           userInfo,
         },
       });
@@ -177,9 +222,11 @@ export class AuthService {
     }
   }
 
-  async refreshToken(data: RefreshTokenDto) {
+  async refreshToken(refreshToken: string, res: Response) {
     try {
-      const { refreshToken } = data;
+      if (!refreshToken) {
+        throw new UnauthorizedException(ERROR_MSG.UNAUTHORIZED);
+      }
 
       const tokenData = await this.jwtService.verifyAsync<ITokenPayload>(
         refreshToken,
@@ -215,12 +262,12 @@ export class AuthService {
         },
       );
 
-      return new ResponseResult({
+      // Set new tokens in cookies
+      this.setTokenCookies(res, accessToken, newRefreshToken);
+
+      return new ResponseResult<null>({
         message: SUCCESS_MSG.USER.REFRESH_TOKEN,
-        data: {
-          accessToken,
-          refreshToken: newRefreshToken,
-        },
+        data: null,
       });
     } catch (error) {
       if (
@@ -230,6 +277,21 @@ export class AuthService {
       ) {
         handleError(new UnauthorizedException(ERROR_MSG.TOKEN_EXPIRED));
       }
+      handleError(error);
+    }
+  }
+
+  async logout(res: Response) {
+    try {
+      // Clear cookies
+      res.clearCookie('access_token');
+      res.clearCookie('refresh_token');
+
+      return new ResponseResult<null>({
+        message: SUCCESS_MSG.USER.LOGOUT,
+        data: null,
+      });
+    } catch (error) {
       handleError(error);
     }
   }
@@ -257,7 +319,7 @@ export class AuthService {
         password: newPasswordHash,
       });
 
-      return new ResponseResult({
+      return new ResponseResult<null>({
         message: SUCCESS_MSG.USER.CHANGE_PASSWORD,
       });
     } catch (error) {
@@ -265,7 +327,7 @@ export class AuthService {
     }
   }
 
-  async validateAccessToken(token: string) {
+  async validateAccessToken(token: string): Promise<IUserValidationResult> {
     try {
       // check token
       if (!token) {
