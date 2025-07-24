@@ -20,7 +20,6 @@ export class UserService {
       return new ResponseResult({
         message: SUCCESS_MSG.GET_PROFILE,
         data: userInfo,
-        statusCode: 200,
       });
     } catch (error) {
       handleError(error);

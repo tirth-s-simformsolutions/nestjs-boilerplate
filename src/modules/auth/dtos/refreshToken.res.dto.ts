@@ -6,7 +6,4 @@ export class RefreshTokenResponseDto extends PickType(CommonResponseDto, [
 ] as const) {
   @ApiProperty({ example: 'Refresh token generated successfully' })
   message: string;
-
-  @ApiProperty()
-  data = null;
 }

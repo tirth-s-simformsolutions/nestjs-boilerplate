@@ -265,7 +265,7 @@ export class AuthService {
       // Set new tokens in cookies
       this.setTokenCookies(res, accessToken, newRefreshToken);
 
-      return new ResponseResult({
+      return new ResponseResult<null>({
         message: SUCCESS_MSG.USER.REFRESH_TOKEN,
         data: null,
       });
@@ -287,8 +287,8 @@ export class AuthService {
       res.clearCookie('access_token');
       res.clearCookie('refresh_token');
 
-      return new ResponseResult({
-        message: 'Logout successful',
+      return new ResponseResult<null>({
+        message: SUCCESS_MSG.USER.LOGOUT,
         data: null,
       });
     } catch (error) {
@@ -319,7 +319,7 @@ export class AuthService {
         password: newPasswordHash,
       });
 
-      return new ResponseResult({
+      return new ResponseResult<null>({
         message: SUCCESS_MSG.USER.CHANGE_PASSWORD,
       });
     } catch (error) {

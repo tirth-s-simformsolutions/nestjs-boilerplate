@@ -74,7 +74,6 @@ describe('User Service', () => {
       });
       expect(result.message).toBe(SUCCESS_MSG.GET_PROFILE);
       expect(result.data).toEqual(mockUser);
-      expect(result.statusCode).toBe(200);
     });
 
     it('should handle null user data from repository', async () => {
@@ -91,7 +90,6 @@ describe('User Service', () => {
       });
       expect(result.data).toBeNull();
       expect(result.message).toBe(SUCCESS_MSG.GET_PROFILE);
-      expect(result.statusCode).toBe(200);
     });
   });
 

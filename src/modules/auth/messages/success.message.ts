@@ -4,5 +4,6 @@ export const SUCCESS_MSG = {
     LOGIN: 'authSuccess.USER.LOGIN',
     CHANGE_PASSWORD: 'authSuccess.USER.CHANGE_PASSWORD',
     REFRESH_TOKEN: 'authSuccess.USER.REFRESH_TOKEN',
+    LOGOUT: 'authSuccess.USER.LOGOUT',
   },
 };

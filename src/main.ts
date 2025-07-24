@@ -18,15 +18,6 @@ const configureSwagger = (app: INestApplication): void => {
   const swaggerOptions = new DocumentBuilder()
     .setTitle('Backend Service')
     .setDescription('Backend Service APIs')
-    .addBearerAuth(
-      {
-        type: 'http',
-        description: 'This is Bearer auth',
-        scheme: 'bearer',
-        bearerFormat: 'Token',
-      },
-      'Authorization',
-    )
     .setVersion('1.0')
     .build();
 

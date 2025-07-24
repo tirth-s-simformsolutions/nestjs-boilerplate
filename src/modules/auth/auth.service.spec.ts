@@ -13,6 +13,7 @@ import * as utils from '../../common/utils';
 import { UserRepository } from '../user/user.repository';
 import { AuthService } from './auth.service';
 import { ChangePasswordDto, LoginDto, SignupDto } from './dtos';
+import { SUCCESS_MSG } from './messages';
 
 // Mock the utils module
 jest.mock('../../common/utils', () => ({
@@ -130,7 +131,7 @@ describe('AuthService', () => {
       expect(result.data).toEqual({
         userInfo,
       });
-      expect(result.message).toBeDefined();
+      expect(result.message).toBe(SUCCESS_MSG.USER.CREATED);
       expect(result.statusCode).toBe(201);
     });
 
@@ -185,7 +186,7 @@ describe('AuthService', () => {
       expect(result.data).toEqual({
         userInfo,
       });
-      expect(result.message).toBeDefined();
+      expect(result.message).toBe(SUCCESS_MSG.USER.LOGIN);
     });
 
     it('should throw BadRequestException for invalid credentials', async () => {
@@ -278,7 +279,7 @@ describe('AuthService', () => {
       });
       expect(mockUserRepository.findUserById).toHaveBeenCalledWith('1');
       expect(mockResponse.cookie).toHaveBeenCalledTimes(2);
-      expect(result.message).toBeDefined();
+      expect(result.message).toBe(SUCCESS_MSG.USER.REFRESH_TOKEN);
       expect(result.data).toBeNull();
     });
 
@@ -318,7 +319,7 @@ describe('AuthService', () => {
 
       expect(mockResponse.clearCookie).toHaveBeenCalledWith('access_token');
       expect(mockResponse.clearCookie).toHaveBeenCalledWith('refresh_token');
-      expect(result.message).toBe('Logout successful');
+      expect(result.message).toBe(SUCCESS_MSG.USER.LOGOUT);
       expect(result.data).toBeNull();
     });
   });
@@ -353,7 +354,7 @@ describe('AuthService', () => {
       expect(mockUserRepository.updateUserById).toHaveBeenCalledWith(userId, {
         password: newPasswordHash,
       });
-      expect(result.message).toBeDefined();
+      expect(result.message).toBe(SUCCESS_MSG.USER.CHANGE_PASSWORD);
     });
 
     it('should throw BadRequestException for same password', async () => {

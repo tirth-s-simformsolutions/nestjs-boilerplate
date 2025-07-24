@@ -25,5 +25,11 @@
   "prettier.documentSelectors": [
     "*.ts",
     "*.js",
-  ]
+  ],
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  }
 }
