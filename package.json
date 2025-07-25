@@ -43,7 +43,9 @@
     "helmet": "^7.1.0",
     "nestjs-i18n": "^10.4.5",
     "pg": "^8.12.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
