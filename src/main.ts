@@ -87,17 +87,17 @@ const bootstrap = async (): Promise<void> => {
   const env = configService.get<string>('app.env');
   if (dsn && (env === ENV.PRODUCTION || env === ENV.STAGING)) {
     sentry.init({
-      dsn: dsn,
+      dsn,
       tracesSampleRate: 0.8,
       environment: env,
     });
   }
 
-  const port = configService.get<number>('app.port');
+  const port = configService.get<number>('app.port') ?? '3000';
 
   await app.listen(port, () => {
     nestLogger.log(`🚀 Service running on port ${port}`);
   });
 };
 
-bootstrap();
+void bootstrap();

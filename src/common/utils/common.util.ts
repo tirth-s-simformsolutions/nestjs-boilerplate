@@ -1,6 +1,6 @@
 import { HttpException, InternalServerErrorException } from '@nestjs/common';
-import { validateSync } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
 import { EnvVariablesDto } from '../dtos';
 
 export const handleError = (error: Error): void => {
@@ -22,11 +22,9 @@ export const validateEnvVariables = (config: Record<string, unknown>) => {
 
   if (errors.length > 0) {
     const errorMessages = errors
-      .map((error) => Object.values(error.constraints || {}).join(', '))
+      .map(error => Object.values(error.constraints ?? {}).join(', '))
       .join(', ');
-    throw new Error(
-      `Environment Variables Validation Failed: ${errorMessages}`,
-    );
+    throw new Error(`Environment Variables Validation Failed: ${errorMessages}`);
   }
   return validatedConfig;
 };
