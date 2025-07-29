@@ -48,9 +48,6 @@ npm install
 ### 2. Database Setup
 
 ```bash
-# Create a new PostgreSQL database
-createdb nestjs_boilerplate
-
 # Copy environment file
 cp .env.example .env
 ```
@@ -90,8 +87,9 @@ Before getting started, ensure you have the following installed:
 
 - **[Volta](https://volta.sh/)** for Node.js version management
 - **[PostgreSQL v16](https://www.postgresql.org/)** or higher
-- **npm** (comes with Node.js)
-- **Git** for version control
+- **[npm](https://www.npmjs.com)** (comes with Node.js) - Version >= 10.9.2
+- **[Node](https://nodejs.org/en/download)** - Version >= 22.15.0
+- **[Git](https://git-scm.com/downloads)** for version control
 
 ### Optional Tools
 
@@ -170,75 +168,7 @@ cp .env.example .env
 
 Update the environment variables in `.env` file according to your setup:
 
-```env
-# Application
-NODE_ENV=development
-PORT=3000
-API_PREFIX=api/v1
-
-# Database
-DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
-
-# JWT (if using authentication)
-JWT_SECRET=your-super-secret-jwt-key
-JWT_EXPIRES_IN=7d
-
-# Other configurations...
-```
-
-### 4. Local Development Setup
-
-#### Option A: Using Local PostgreSQL
-
-1. **Install PostgreSQL** (if not already installed):
-
-   ```bash
-   # macOS with Homebrew
-   brew install postgresql@16
-   brew services start postgresql@16
-
-   # Ubuntu/Debian
-   sudo apt-get install postgresql-16
-   sudo systemctl start postgresql
-
-   # Windows - Download from https://www.postgresql.org/download/windows/
-   ```
-
-2. **Create Database**:
-
-   ```bash
-   # Connect to PostgreSQL
-   psql postgres
-
-   # Create database and user
-   CREATE DATABASE nestjs_boilerplate;
-   CREATE USER nestjs_user WITH ENCRYPTED PASSWORD 'your_password';
-   GRANT ALL PRIVILEGES ON DATABASE nestjs_boilerplate TO nestjs_user;
-   \q
-   ```
-
-3. **Update .env file**:
-
-   ```env
-   DATABASE_URL=postgresql://nestjs_user:your_password@localhost:5432/nestjs_boilerplate?schema=public
-   ```
-
-#### Option B: Using Docker (Alternative)
-
-```bash
-# Start PostgreSQL with Docker
-docker run --name nestjs-postgres \
-  -e POSTGRES_DB=nestjs_boilerplate \
-  -e POSTGRES_USER=nestjs_user \
-  -e POSTGRES_PASSWORD=your_password \
-  -p 5432:5432 \
-  -d postgres:16
-
-# Update .env file
-DATABASE_URL=postgresql://nestjs_user:your_password@localhost:5432/nestjs_boilerplate?schema=public
-```
-
-### 5. Verify Your Setup
+### 4. Verify Your Setup
 
 After completing the setup, verify everything is working:
 
@@ -248,51 +178,7 @@ npm run prisma:studio
 
 # Run health check
 curl http://localhost:3000/api/v1/health
-
-# Test API endpoints
-curl http://localhost:3000/api/v1/users
 ```
-
-### 🔧 Troubleshooting
-
-#### Common Issues and Solutions
-
-1. **Database Connection Error**:
-
-   ```bash
-   # Check if PostgreSQL is running
-   brew services list | grep postgresql  # macOS
-   sudo systemctl status postgresql      # Linux
-
-   # Check connection manually
-   psql $DATABASE_URL
-   ```
-
-2. **Port Already in Use**:
-
-   ```bash
-   # Find process using port 3000
-   lsof -i :3000
-
-   # Kill the process or change PORT in .env
-   PORT=3001
-   ```
-
-3. **Prisma Client Not Generated**:
-
-   ```bash
-   npm run prisma:generate
-   ```
-
-4. **Migration Issues**:
-
-   ```bash
-   # Reset database (⚠️ This deletes all data)
-   npm run db:reset
-
-   # Or create a new migration
-   npm run prisma:migrate
-   ```
 
 ### 🌟 Next Steps
 
@@ -371,15 +257,13 @@ The application will start on `http://localhost:3000` (or the port specified in 
 
 ### Available Scripts
 
-| Script               | Description                              |
-| -------------------- | ---------------------------------------- |
-| `npm run dev`        | Start development server with hot reload |
-| `npm run build`      | Build the application for production     |
-| `npm run start`      | Start production server                  |
-| `npm run start:prod` | Start production server (optimized)      |
-| `npm run lint`       | Run ESLint                               |
-| `npm run lint:fix`   | Fix ESLint issues automatically          |
-| `npm run format`     | Format code with Prettier                |
+| Script             | Description                              |
+| ------------------ | ---------------------------------------- |
+| `npm run dev`      | Start development server with hot reload |
+| `npm run build`    | Build the application for production     |
+| `npm run start`    | Start production server                  |
+| `npm run lint`     | Fix ESLint issues automatically          |
+| `npm run lint:fix` | Run ESLint                               |
 
 ## 🧪 Testing
 
@@ -420,10 +304,7 @@ describe('UserService', () => {
 // E2E test example
 describe('Users (e2e)', () => {
   it('/users (POST)', () => {
-    return request(app.getHttpServer())
-      .post('/users')
-      .send(createUserDto)
-      .expect(201);
+    return request(app.getHttpServer()).post('/users').send(createUserDto).expect(201);
   });
 });
 ```
@@ -437,17 +318,6 @@ Access the interactive API documentation:
 ```
 http://localhost:{PORT}/docs
 ```
-
-### API Endpoints
-
-| Method   | Endpoint            | Description    |
-| -------- | ------------------- | -------------- |
-| `GET`    | `/api/v1/health`    | Health check   |
-| `GET`    | `/api/v1/users`     | Get all users  |
-| `POST`   | `/api/v1/users`     | Create user    |
-| `GET`    | `/api/v1/users/:id` | Get user by ID |
-| `PUT`    | `/api/v1/users/:id` | Update user    |
-| `DELETE` | `/api/v1/users/:id` | Delete user    |
 
 ### Using Swagger
 
@@ -465,54 +335,14 @@ Monitor application health:
 curl http://localhost:3000/api/v1/health
 ```
 
-Expected response:
-
-```json
-{
-  "status": "ok",
-  "info": {
-    "database": {
-      "status": "up"
-    }
-  }
-}
-```
-
-### Health Check Features
-
-- Database connectivity check
-- Memory usage monitoring
-- Disk space monitoring
-- Custom health indicators
-
 ## 🚀 Deployment
 
 ### Production Build
 
 ```bash
 npm run build
-npm run start:prod
+npm run start
 ```
-
-### Environment Variables for Production
-
-Ensure the following environment variables are set:
-
-```env
-NODE_ENV=production
-DATABASE_URL=your-production-database-url
-JWT_SECRET=your-production-jwt-secret
-```
-
-### Deployment Platforms
-
-This boilerplate is ready for deployment on:
-
-- **Heroku**
-- **Vercel**
-- **AWS**
-- **DigitalOcean**
-- **Docker containers**
 
 ## 🤝 Contributing
 
@@ -553,33 +383,6 @@ src/modules/example/
 └── example.module.ts
 ```
 
-## 📝 Future Enhancements
-
-This boilerplate can be extended with:
-
-- **Authentication & Authorization** (JWT, OAuth2)
-- **Rate Limiting**
-- **Caching** (Redis)
-- **File Upload** (AWS S3, Cloudinary)
-- **Email Service** (SendGrid, Nodemailer)
-- **Background Jobs** (Bull Queue)
-- **WebSocket Support**
-- **Microservices Architecture**
-- **API Versioning**
-- **Logging & Monitoring** (Winston, Prometheus)
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🤝 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [documentation](#-table-of-contents)
-2. Search existing [issues](link-to-issues)
-3. Create a new issue with detailed information
-
----
