@@ -1,0 +1,68 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "install": {
+      "cache": false,
+      "persistent": false,
+      "outputs": []
+    },
+    "prisma:generate": {
+      "inputs": ["prisma/schema.prisma", "prisma/migrations/**"]
+    },
+    "build": {
+      "dependsOn": ["prisma:generate", "^build"],
+      "inputs": ["src/**", "package.json", "../../packages/**"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "test": {},
+    "prettier": {
+      "dependsOn": ["^prettier"],
+      "inputs": [
+        "src/**",
+        "apps/**",
+        "test/**",
+        "packages/**",
+        "*.json",
+        "*.md",
+        "*.yml",
+        "*.yaml",
+        "*.ts",
+        "*.js"
+      ]
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "inputs": [
+        "src/**",
+        "apps/**",
+        "test/**",
+        "packages/**",
+        "*.json",
+        "*.md",
+        "*.yml",
+        "*.yaml",
+        "*.ts",
+        "*.js"
+      ]
+    },
+    "lint:check": {
+      "dependsOn": ["^lint:check"],
+      "inputs": [
+        "src/**",
+        "apps/**",
+        "test/**",
+        "packages/**",
+        "*.json",
+        "*.md",
+        "*.yml",
+        "*.yaml",
+        "*.ts",
+        "*.js"
+      ]
+    }
+  }
+}

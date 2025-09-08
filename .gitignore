@@ -41,3 +41,23 @@ npm-cache/
 src/generated
 
 .env
+
+# Turborepo cache
+.turbo
+.turbo-cache
+turbo
+.cache
+
+# Lockfiles and dist
+apps/**/package-lock.json
+apps/**/yarn.lock
+apps/**/pnpm-lock.yaml
+apps/**/dist
+apps/**/.turbo
+apps/**/node_modules
+packages/**/package-lock.json
+packages/**/yarn.lock
+packages/**/pnpm-lock.yaml
+packages/**/dist
+packages/**/.turbo
+packages/**/node_modules

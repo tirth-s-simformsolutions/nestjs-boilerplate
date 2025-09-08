@@ -37,11 +37,13 @@ All the apis were built using [Nest js](https://github.com/nestjs/nest) framewor
 ### Setup Database
 
 - Add Database specific environment variables into **.env** file:
+
   ```
   DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
   ```
 
 - Run following command to create database tables:
+
   ```bash
   npm run prisma:migrate
   ```
@@ -58,6 +60,7 @@ All the apis were built using [Nest js](https://github.com/nestjs/nest) framewor
     ```
 
 - To reset database (Warning: This will delete all data):
+
   ```bash
   npm run db:reset
   ```

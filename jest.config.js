@@ -1,4 +1,4 @@
-module.exports = {
+module.exports.JestBaseConfig = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   moduleFileExtensions: ['js', 'json', 'ts'],
@@ -7,29 +7,7 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  collectCoverageFrom: [
-    '**/*.(t|j)s',
-    '!**/*.module.ts',
-    '!**/*.constant.ts',
-    '!**/*.interface.ts',
-    '!**/*.interceptor.ts',
-    '!**/*.dto.ts',
-    '!**/main.ts',
-    '!**/index.ts',
-    '!**/*.config.ts',
-    '!database/seed.ts',
-    '!database/migrations/**',
-    '!**/messages/**',
-  ],
   coverageDirectory: '../coverage',
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
-    '^@common/(.*)$': '<rootDir>/common/$1',
-    '^@config/(.*)$': '<rootDir>/config/$1',
-    '^@core/(.*)$': '<rootDir>/core/$1',
-    '^@database/(.*)$': '<rootDir>/database/$1',
-    '^@modules/(.*)$': '<rootDir>/modules/$1',
-  },
   setupFilesAfterEnv: ['<rootDir>/../test/setup.ts'],
   coverageReporters: ['text', 'lcov', 'html', 'json'],
   coverageThreshold: {
@@ -46,4 +24,12 @@ module.exports = {
   clearMocks: true,
   // Restore mocks after each test
   restoreMocks: true,
+};
+
+module.exports = {
+  // Root config only defines "projects"
+  projects: [
+    '<rootDir>/apps/*/jest.config.js',
+    '<rootDir>/packages/*/jest.config.js',
+  ],
 };
