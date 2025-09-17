@@ -1,3 +1,10 @@
+export const RABBITMQ_EXCHANGE_TYPES = {
+  DIRECT: 'direct',
+  FANOUT: 'fanout',
+  TOPIC: 'topic',
+  HEADERS: 'headers',
+};
+
 export const RABBITMQ_COMMON_OPTIONS = {
   queueOptions: {
     durable: true,
@@ -12,6 +19,6 @@ export const RABBITMQ_SERVICES = {
 };
 
 export const RABBITMQ_EVENTS = {
-  BOOK_CREATED: 'book-created-rabbitmq',
-  USER_ACTIVATED: 'user-activated-rabbitmq',
+  USER_ACTIVATED: 'user-activated',
+  CREATE_BOOK: 'create-book',
 };

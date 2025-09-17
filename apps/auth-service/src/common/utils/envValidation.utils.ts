@@ -1,9 +1,9 @@
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
-import { EnvVariablesDto1 } from '../dtos';
+import { EnvVariablesDto } from '../dtos';
 
-export const validateEnvVariables1 = (config: Record<string, unknown>) => {
-  const validatedConfig = plainToInstance(EnvVariablesDto1, config, {
+export const validateEnvVariables = (config: Record<string, unknown>) => {
+  const validatedConfig = plainToInstance(EnvVariablesDto, config, {
     enableImplicitConversion: true,
   });
 

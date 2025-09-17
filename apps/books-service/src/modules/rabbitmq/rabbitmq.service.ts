@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { RABBITMQ_EVENTS, RABBITMQ_SERVICES } from '@packages/common';
+import { RABBITMQ_SERVICES } from '@packages/common';
 
 interface RabbitMQMessage {
   [key: string]: unknown;
@@ -50,18 +50,6 @@ export class RabbitMQService implements OnModuleInit {
       );
       throw error;
     }
-  }
-
-  /**
-   * Publish user-related events
-   */
-  async publishUserEvent() {
-    const message = {
-      timestamp: Date.now(),
-      service: 'book-service',
-      message: 'Event from Book Service',
-    };
-    return this.publishMessage(RABBITMQ_EVENTS.USER_ACTIVATED, message);
   }
 
   async onModuleDestroy() {

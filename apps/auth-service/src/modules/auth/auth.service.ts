@@ -12,10 +12,12 @@ import {
   compareHash,
   createHash,
   handleError,
+  RABBITMQ_EVENTS,
   ResponseResult,
   UserStatus,
 } from '@packages/common';
 import { Response } from 'express';
+import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
 import { UserRepository } from '../user/user.repository';
 import { ChangePasswordDto, LoginDto, SignupDto } from './dtos';
 import {
@@ -34,6 +36,7 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly rabbitmqService: RabbitMQService,
   ) {
     this.accessTokenSecretKey = this.configService.get<string>(
       'jwt.accessToken.secretKey',
@@ -140,6 +143,14 @@ export class AuthService {
 
       // Set tokens in cookies
       this.setTokenCookies(res, accessToken, refreshToken);
+
+      /** Publish rabbitmq event */
+      await this.rabbitmqService.publishMessage(RABBITMQ_EVENTS.CREATE_BOOK, {
+        timestamp: Date.now(),
+        service: 'auth-service',
+        message: 'Event from Auth service',
+        shouldFail: 0,
+      });
 
       return new ResponseResult({
         message: SUCCESS_MSG.USER.CREATED,

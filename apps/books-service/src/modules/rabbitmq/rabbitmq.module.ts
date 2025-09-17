@@ -6,7 +6,7 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { RABBITMQ_COMMON_OPTIONS, RABBITMQ_SERVICES } from '@packages/common';
-import { RabbitMQController } from './rabbitmq.controller';
+import { RabbitMQListenerService } from './rabbitmq-listener.service';
 import { RabbitMQService } from './rabbitmq.service';
 
 @Module({
@@ -23,13 +23,14 @@ import { RabbitMQService } from './rabbitmq.service';
             ...RABBITMQ_COMMON_OPTIONS,
             urls: [configService.get<string>('rabbitmq.connection_uri')],
             queue: RABBITMQ_SERVICES.AUTH_SERVICE,
+            exchange: RABBITMQ_SERVICES.BOOK_SERVICE,
             noAck: true,
           },
         }),
       },
     ]),
   ],
-  controllers: [RabbitMQController],
+  controllers: [RabbitMQListenerService],
   providers: [RabbitMQService],
   exports: [RabbitMQService],
 })

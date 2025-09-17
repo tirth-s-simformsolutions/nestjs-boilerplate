@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Post, UseFilters } from '@nestjs/common';
+import { Controller, Logger, UseFilters } from '@nestjs/common';
 import {
   Ctx,
   MessagePattern,
@@ -6,63 +6,24 @@ import {
   RmqContext,
   RpcException,
 } from '@nestjs/microservices';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Public, RABBITMQ_EVENTS, RpcExceptionFilter } from '@packages/common';
+import { RABBITMQ_EVENTS, RpcExceptionFilter } from '@packages/common';
 import { RabbitMQService } from './rabbitmq.service';
 interface RabbitMQMessage {
   [key: string]: unknown;
 }
 
-@ApiTags('RabbitMQ')
-@Controller('rabbitmq')
 @UseFilters(new RpcExceptionFilter())
-export class RabbitMQController {
-  private readonly logger = new Logger(RabbitMQController.name);
+@Controller()
+export class RabbitMQListenerService {
+  private readonly logger = new Logger(RabbitMQListenerService.name);
   constructor(private readonly rabbitMQService: RabbitMQService) {}
-
-  @Get('health')
-  @ApiOperation({ summary: 'Check RabbitMQ connection health' })
-  @ApiResponse({ status: 200, description: 'RabbitMQ connection is healthy' })
-  async healthCheck() {
-    return {
-      status: 'ok',
-      service: 'rabbitmq',
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  @Post('publish/user-event')
-  @Public()
-  @ApiOperation({ summary: 'Publish a user event to Kafka' })
-  @ApiResponse({
-    status: 201,
-    description: 'User event published successfully',
-  })
-  async publishUserEvent() {
-    try {
-      await this.rabbitMQService.publishUserEvent();
-
-      return {
-        success: true,
-        message: 'User event published successfully',
-        timestamp: new Date().toISOString(),
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: 'Failed to publish user event',
-        error: error.message,
-        timestamp: new Date().toISOString(),
-      };
-    }
-  }
 
   /**
    * Handle user events from RabbitMQ
    * RPC based communication
-   * This listener will consume messages from the 'book-created' pattern
+   * This listener will consume messages from the 'create-book' pattern
    */
-  @MessagePattern(RABBITMQ_EVENTS.BOOK_CREATED)
+  @MessagePattern(RABBITMQ_EVENTS.CREATE_BOOK)
   async handleUserEvents(
     @Payload() message: RabbitMQMessage,
     @Ctx() context: RmqContext,

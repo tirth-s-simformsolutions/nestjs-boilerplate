@@ -5,18 +5,16 @@ import {
   Payload,
   RmqContext,
 } from '@nestjs/microservices';
-import { ApiTags } from '@nestjs/swagger';
 import { RABBITMQ_EVENTS, RpcExceptionFilter } from '@packages/common';
 import { RabbitMQService } from './rabbitmq.service';
 interface RabbitMQMessage {
   [key: string]: unknown;
 }
 
-@ApiTags('RabbitMQ')
-@Controller('rabbitmq')
 @UseFilters(new RpcExceptionFilter())
-export class RabbitMQController {
-  private readonly logger = new Logger(RabbitMQController.name);
+@Controller()
+export class RabbitMQListenerService {
+  private readonly logger = new Logger(RabbitMQListenerService.name);
   constructor(private readonly rabbitMQService: RabbitMQService) {}
 
   /**
@@ -36,8 +34,6 @@ export class RabbitMQController {
         pattern: context.getPattern(),
         message,
       });
-
-      await this.rabbitMQService.publishUserEvent();
 
       // Acknowledge the message
       channel.ack(originalMessage);

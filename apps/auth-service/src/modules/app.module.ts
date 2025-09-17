@@ -16,7 +16,7 @@ import {
 } from '@packages/common';
 import { AcceptLanguageResolver, I18nModule } from 'nestjs-i18n';
 import { join } from 'node:path';
-import { validateEnvVariables1 } from '../common/utils';
+import { validateEnvVariables } from '../common/utils';
 import { AuthModule } from './auth/auth.module';
 import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
 import { UserModule } from './user/user.module';
@@ -26,7 +26,7 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [...commonConfig],
-      validate: validateEnvVariables1,
+      validate: validateEnvVariables,
     }),
     I18nModule.forRootAsync({
       resolvers: [AcceptLanguageResolver],

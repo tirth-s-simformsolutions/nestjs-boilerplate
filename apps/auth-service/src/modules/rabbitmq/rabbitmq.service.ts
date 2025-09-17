@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { RABBITMQ_EVENTS, RABBITMQ_SERVICES } from '@packages/common';
+import { RABBITMQ_SERVICES } from '@packages/common';
 import { catchError, firstValueFrom, retry } from 'rxjs';
 
 @Injectable()
@@ -26,7 +26,11 @@ export class RabbitMQService implements OnModuleInit {
    * Publish a message and get response (RPC pattern)
    * This method sends a message to another service and waits for a response
    */
-  async publishMessage(pattern: string, data: any, timeout = 5000) {
+  async publishMessage(
+    pattern: string,
+    data: Record<string, unknown>,
+    timeout = 5000,
+  ) {
     this.logger.log(`Publishing message with pattern: ${pattern}`, { data });
 
     try {
@@ -108,17 +112,17 @@ export class RabbitMQService implements OnModuleInit {
     }
   }
 
-  /**
-   * Publish user-related events
-   */
-  async publishUserEvent() {
-    const message = {
-      timestamp: Date.now(),
-      service: 'auth-service',
-      message: 'Event from Auth service',
-      shouldFail: 0,
-    };
+  // /**
+  //  * Publish user-related events
+  //  */
+  // async publishUserEvent() {
+  //   const message = {
+  //     timestamp: Date.now(),
+  //     service: 'auth-service',
+  //     message: 'Event from Auth service',
+  //     shouldFail: 0,
+  //   };
 
-    return this.publishMessage(RABBITMQ_EVENTS.BOOK_CREATED, message);
-  }
+  //   return this.publishMessage(RABBITMQ_EVENTS.BOOK_CREATED, message);
+  // }
 }

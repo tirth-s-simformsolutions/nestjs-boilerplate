@@ -105,6 +105,7 @@ const bootstrap = async (): Promise<void> => {
       ...RABBITMQ_COMMON_OPTIONS,
       urls: [configService.get<string>('rabbitmq.connection_uri')],
       queue: RABBITMQ_SERVICES.AUTH_SERVICE,
+      exchange: RABBITMQ_SERVICES.AUTH_SERVICE,
     },
   });
   await app.startAllMicroservices();
