@@ -1,0 +1,5 @@
+{
+  "UNAUTHORIZED": "Unauthorized User",
+  "INVALID_CREDENTIALS": "Invalid credentials",
+  "TOKEN_EXPIRED": "Token expired!"
+}

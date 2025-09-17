@@ -1,0 +1,15 @@
+{
+  "PASSWORD": {
+    "INVALID_PASSWORD": "Password must include uppercase, lowercase, number, special character, and be at least 8 characters long.",
+    "INVALID_NEW_PASSWORD": "New password must include uppercase, lowercase, number, special character, and be at least 8 characters long.",
+    "SAME_PASSWORD": "Your new password is the same as your old one; please choose a different password",
+    "INVALID_OLD_PASSWORD": "Old password must include uppercase, lowercase, number, special character, and be at least 8 characters long."
+  },
+  "USER": {
+    "USER_EXISTS_WITH_SAME_EMAIL": "User exists with same email",
+    "ACCOUNT_NOT_ACTIVE": "Account not active"
+  },
+  "UNAUTHORIZED": "Unauthorized User",
+  "INVALID_CREDENTIALS": "Invalid credentials",
+  "TOKEN_EXPIRED": "Token expired!"
+}
