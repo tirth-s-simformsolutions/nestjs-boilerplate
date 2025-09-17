@@ -11,8 +11,15 @@ export const commonConfig = [
       secretKey: process.env.JWT_REFRESH_SECRET_KEY,
     },
   })),
-
   registerAs('database', () => ({
     url: process.env.DATABASE_URL,
+  })),
+  registerAs('rabbitmq', () => ({
+    connection_uri: process.env.RABBITMQ_URL,
+  })),
+  registerAs('app', () => ({
+    env: process.env.NODE_ENV,
+    port: parseInt(process.env.PORT, 10),
+    sentryDsn: process.env.SENTRY_DSN,
   })),
 ];

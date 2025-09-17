@@ -55,9 +55,11 @@ apps/**/pnpm-lock.yaml
 apps/**/dist
 apps/**/.turbo
 apps/**/node_modules
+apps/**/.env
 packages/**/package-lock.json
 packages/**/yarn.lock
 packages/**/pnpm-lock.yaml
 packages/**/dist
 packages/**/.turbo
 packages/**/node_modules
+packages/**/.env

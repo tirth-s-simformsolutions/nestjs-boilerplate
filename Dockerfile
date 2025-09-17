@@ -1,15 +1,25 @@
-FROM node:22-alpine
-
+FROM node:22-alpine AS builder
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+ARG SERVICE
+ENV SERVICE=${SERVICE}
+# e.g. --build-arg SERVICE=auth-service
 
-RUN npm ci && npm cache clean --force
+# Copy root configs
+COPY package*.json turbo.json tsconfig*.json ./
 
-COPY . .
+# Copy shared packages
+COPY packages ./packages
 
-RUN npm run build
+# Copy apps folder (so we can validate SERVICE)
+COPY apps ./apps
 
-EXPOSE 3000
+# Install deps
+RUN npm ci --ignore-scripts
 
-CMD ["npm", "start"]
+# Build only the selected service
+RUN npx turbo run build --filter=${SERVICE}
+
+# Run the start script from that service's package.json
+WORKDIR /app/apps/${SERVICE}
+CMD ["npm", "run", "start"]

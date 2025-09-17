@@ -1,6 +1,32 @@
-.dockerignore
+# ---------------------------
+# Root level
+# ---------------------------
 node_modules
-npm-debug.log
 dist
 logs
 .husky
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Editor / system files
+.vscode
+.idea
+.DS_Store
+
+# ---------------------------
+# Ignore everything inside apps/ and packages/
+# ---------------------------
+apps/**/node_modules
+apps/**/.turbo
+apps/**/dist
+apps/**/logs
+apps/**/.husky
+apps/**/.env
+
+packages/**/node_modules
+packages/**/.turbo
+packages/**/dist
+packages/**/logs
+packages/**/.husky
+packages/**/.env

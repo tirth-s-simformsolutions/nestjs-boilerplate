@@ -1,32 +1,59 @@
-version: '3.8'
+version: '3.9'
 
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: nestjs-postgres
-    env_file:
-      - .env
+  # -------------------------------
+  # RabbitMQ
+  # -------------------------------
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - '5672:5672' # AMQP
+      - '15672:15672' # Management UI
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 
-  backend:
+  # -------------------------------
+  # Auth Service
+  # -------------------------------
+  auth-service:
+    build:
+      context: . # root context, so packages/ and apps/ are accessible
+      dockerfile: apps/auth-service/Dockerfile
+      args:
+        SERVICE: auth-service
+    container_name: auth-service
+    environment:
+      SERVICE: auth-service
+      NODE_ENV: development
+      RABBITMQ_HOST: rabbitmq # use Docker service name
+      RABBITMQ_PORT: 5672
+    depends_on:
+      - rabbitmq
+    ports:
+      - '3000:3000'
+    restart: unless-stopped
+    command: npm run start
+
+  # -------------------------------
+  # Example of another service
+  # -------------------------------
+  user-service:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-    container_name: nestjs-backend
-    ports:
-      - '${PORT}:${PORT}'
-    env_file:
-      - .env
+      dockerfile: apps/user-service/Dockerfile
+      args:
+        SERVICE: user-service
+    container_name: user-service
+    environment:
+      SERVICE: user-service
+      NODE_ENV: development
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
     depends_on:
-      - postgres
-    volumes:
-      - .:/app
-      - /app/node_modules
-
-volumes:
-  postgres_data:
+      - rabbitmq
+    ports:
+      - '3001:3000'
+    restart: unless-stopped
+    command: npm run start

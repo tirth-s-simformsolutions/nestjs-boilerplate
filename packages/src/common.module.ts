@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { LoggerService } from './common';
 import {
   AuthGuard,
@@ -20,11 +21,11 @@ const commonServices = [
   HttpExceptionsFilter,
   ResponseInterceptor,
   HealthModule,
+  JwtService,
 ];
 
 @Module({
   imports: [DatabaseModule, HealthModule],
-  controllers: [],
   providers: commonServices,
   exports: commonServices,
 })

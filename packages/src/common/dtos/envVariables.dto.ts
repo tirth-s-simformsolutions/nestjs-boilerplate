@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { ENV } from '../constants';
 
-export class EnvVariablesDto {
+export class CommonEnvVariablesDto {
   @IsString()
   @IsIn(Object.values(ENV))
   NODE_ENV: string;
@@ -23,17 +23,11 @@ export class EnvVariablesDto {
   @IsString()
   SENTRY_DSN: string;
 
-  @IsString()
   @IsNotEmpty()
-  JWT_ACCESS_TOKEN_EXPIRE: string;
-
-  @IsString()
-  @IsNotEmpty()
-  JWT_REFRESH_TOKEN_EXPIRE: string;
-
   @IsString()
   JWT_ACCESS_SECRET_KEY: string;
 
+  @IsNotEmpty()
   @IsString()
-  JWT_REFRESH_SECRET_KEY: string;
+  RABBITMQ_URL: string;
 }
